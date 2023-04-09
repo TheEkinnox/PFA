@@ -26,6 +26,7 @@ file(GLOB_RECURSE PROJECT_FILES
 
 target_sources(${EXE_NAME} PRIVATE ${PROJECT_FILES})
 target_include_directories(${EXE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${PROJECT_FILES})
 
 
 ###############################
