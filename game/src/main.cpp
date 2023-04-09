@@ -1,10 +1,16 @@
-#include <Arithmetic.h>
-#include <iostream>
-#include <Debug/Log.h>
+#include "Core/GameApp.h"
+
+#include <crtdbg.h>
 
 int main()
 {
-	LibGL::Debug::Log::openFile("Debug.log");
-	DEBUG_LOG("LibGL was successfully linked !");
-	return LibMath::clamp(-1, 0, 1);
+#ifdef _DEBUG
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
+	PFA::Core::GameApp app;
+
+	app.run();
+
+	return 0;
 }
