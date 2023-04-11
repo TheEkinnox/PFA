@@ -2,7 +2,7 @@
 
 namespace PFA::Gameplay
 {
-	enum ECyclingMode
+	enum class ECyclingMode
 	{
 		LOOP,
 		PING_PONG

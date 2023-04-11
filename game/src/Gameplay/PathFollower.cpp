@@ -2,7 +2,8 @@
 
 using namespace PFA::Gameplay;
 using Vec3 = LibMath::Vector3;
-PathFollower::PathFollower(const std::vector<Vec3>& p_path, ECyclingMode p_cyclingMode = LOOP)
+
+PathFollower::PathFollower(const std::vector<Vec3>& p_path, ECyclingMode p_cyclingMode = ECyclingMode::LOOP)
 {
 	m_path = p_path;
 	m_currentIndex = 0;
@@ -21,12 +22,12 @@ const Vec3& PathFollower::nextPoint()
 	{
 		switch (m_cyclingMode)
 		{
-		case PFA::Gameplay::LOOP:
+		case ECyclingMode::LOOP:
 
 			nextIndex = 0;
 			break;
 
-		case PFA::Gameplay::PING_PONG:
+		case ECyclingMode::PING_PONG:
 
 			std::reverse(m_path.begin(), m_path.end());
 			m_currentIndex = 0;
@@ -38,7 +39,6 @@ const Vec3& PathFollower::nextPoint()
 			break;
 		}
 	}
-	
 	else
 	{
 		nextIndex = m_currentIndex + 1;
