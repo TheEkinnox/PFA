@@ -67,12 +67,12 @@ namespace LibGL::Rendering
 		LibMath::Vector4 rgba() const;
 	};
 
-	inline const Color Color::red = { 1, 0, 0, 1 };
-	inline const Color Color::green = { 0, 1, 0, 1 };
-	inline const Color Color::blue = { 0, 0, 1, 1 };
-	inline const Color Color::magenta = { 1, 0, 1, 1 };
-	inline const Color Color::black = { 0, 0, 0, 1 };
-	inline const Color Color::white = { 1, 1, 1, 1 };
-	inline const Color Color::clear = { 0, 0, 0, 0 };
+	inline const Color Color::red		= { 1.f, 0.f, 0.f, 1.f };
+	inline const Color Color::green		= { 0.f, 1.f, 0.f, 1.f };
+	inline const Color Color::blue		= { 0.f, 0.f, 1.f, 1.f };
+	inline const Color Color::magenta	= { 1.f, 0.f, 1.f, 1.f };
+	inline const Color Color::black		= { 0.f, 0.f, 0.f, 1.f };
+	inline const Color Color::white		= { 1.f, 1.f, 1.f, 1.f };
+	inline const Color Color::clear		= { 0.f, 0.f, 0.f, 0.f };
 }
 

@@ -11,9 +11,9 @@ namespace LibGL::Rendering
 {
 	struct Light
 	{
-		Color	m_ambient;
-		Color	m_diffuse;
-		Color	m_specular;
+		Color	m_ambient	= Color::black;
+		Color	m_diffuse	= Color::black;
+		Color	m_specular	= Color::black;
 
 		Light() = default;
 		Light(const Color& ambient, const Color& diffuse, const Color& specular);
