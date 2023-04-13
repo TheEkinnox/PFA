@@ -3,7 +3,8 @@
 
 namespace LibMath
 {
-	constexpr float lerp(const float a, const float b, const float t)
+	template <typename ValT, typename ProgressT>
+	constexpr ValT lerp(const ValT a, const ValT b, const ProgressT t)
 	{
 		return a + (b - a) * t;
 	}
