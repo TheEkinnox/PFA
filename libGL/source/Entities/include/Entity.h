@@ -14,6 +14,9 @@ namespace LibGL
 		typedef std::vector<ComponentPtr> ComponentList;
 
 	public:
+		Entity() = default;
+		Entity(Entity* parent, const Transform& transform);
+
 		template <typename T, typename ... Args>
 		T& addComponent(Args&&... args);
 
