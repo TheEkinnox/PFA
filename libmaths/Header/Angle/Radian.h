@@ -1,6 +1,8 @@
 #ifndef __LIBMATH__ANGLE__RADIAN_H__
 #define __LIBMATH__ANGLE__RADIAN_H__
 
+#include "Angle/Degree.h"
+
 namespace LibMath
 {
 	class Degree;
