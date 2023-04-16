@@ -1,8 +1,8 @@
 #pragma once
-#include "Core/Event.h"
+#include "Eventing/Event.h"
 #include <ranges>
 
-namespace PFA::Core
+namespace LibGL
 {
 	template <class ... ArgTypes>
 	IEvent::ListenerId Event<ArgTypes...>::subscribe(Action action)
@@ -19,13 +19,13 @@ namespace PFA::Core
 	}
 
 	template <class ... ArgTypes>
-	size_t Event<ArgTypes...>::subscribersCount()
+	size_t Event<ArgTypes...>::subscribersCount() const
 	{
 		return m_actions.size();
 	}
 
 	template <class ... ArgTypes>
-	void Event<ArgTypes...>::invoke(ArgTypes... args)
+	void Event<ArgTypes...>::invoke(ArgTypes... args) const
 	{
 		for (auto& action : m_actions | std::views::values)
 			action(args...);

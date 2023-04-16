@@ -65,6 +65,7 @@ namespace LibGL::Application
 	void Window::setSize(const dimensions_t size)
 	{
 		m_size = size;
+		m_resizeEvent.invoke(m_size);
 	}
 
 	Window::dimensions_t Window::getMinSize() const
@@ -82,30 +83,6 @@ namespace LibGL::Application
 		return glfwWindowShouldClose(m_glfwWindow);
 	}
 
-	uint64_t Window::addKeyCallback(const key_callback_t& callback)
-	{
-		m_keyCallbacks.emplace(m_currentKeyCallbackId, callback);
-		return m_currentKeyCallbackId++;
-	}
-
-	void Window::removeKeyCallback(const uint64_t callbackId)
-	{
-		if (m_keyCallbacks.contains(callbackId))
-			m_keyCallbacks.erase(callbackId);
-	}
-
-	uint64_t Window::addMouseButtonCallback(const mouse_callback_t& callback)
-	{
-		m_mouseCallbacks.emplace(m_currentMouseCallbackId, callback);
-		return m_currentMouseCallbackId++;
-	}
-
-	void Window::removeMouseButtonCallback(const uint64_t callbackId)
-	{
-		if (m_mouseCallbacks.contains(callbackId))
-			m_mouseCallbacks.erase(callbackId);
-	}
-
 	void Window::swapBuffers() const
 	{
 		glfwSwapBuffers(m_glfwWindow);
@@ -114,6 +91,11 @@ namespace LibGL::Application
 	void Window::setShouldClose(const bool shouldClose) const
 	{
 		glfwSetWindowShouldClose(m_glfwWindow, shouldClose);
+	}
+
+	float Window::getAspect() const
+	{
+		return static_cast<float>(m_size.first) / static_cast<float>(m_size.second);
 	}
 
 	void Window::showCursor() const
@@ -160,11 +142,8 @@ namespace LibGL::Application
 	{
 		if (const Window* window = getInstance(glfwWindow))
 		{
-			for (const auto& callback : window->m_keyCallbacks | std::views::values)
-			{
-				callback(static_cast<EKey>(key), scanCode,
-					static_cast<EKeyState>(action), static_cast<EInputModifier>(mods));
-			}
+			window->m_keyEvent.invoke(static_cast<EKey>(key), scanCode,
+				static_cast<EKeyState>(action), static_cast<EInputModifier>(mods));
 		}
 	}
 
@@ -172,12 +151,9 @@ namespace LibGL::Application
 	{
 		if (const Window* window = getInstance(glfwWindow))
 		{
-			for (const auto& callback : window->m_mouseCallbacks | std::views::values)
-			{
-				callback(static_cast<EMouseButton>(button),
-					static_cast<EMouseButtonState>(action),
-					static_cast<EInputModifier>(mods));
-			}
+			window->m_mouseButtonEvent.invoke(static_cast<EMouseButton>(button),
+				static_cast<EMouseButtonState>(action),
+				static_cast<EInputModifier>(mods));
 		}
 	}
 }

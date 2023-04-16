@@ -3,7 +3,7 @@
 #include "InputManager.h"
 #include "LowRenderer/Camera.h"
 #include "Resources/ResourcesManager.h"
-#include "Core/EventManager.h"
+#include "Eventing/EventManager.h"
 
 namespace PFA::Core
 {

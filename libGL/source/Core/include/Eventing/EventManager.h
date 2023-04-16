@@ -1,8 +1,10 @@
 #pragma once
 
-#include "Core/Event.h"
+#include <memory> // unique_ptr
 
-namespace PFA::Core
+#include "Eventing/Event.h"
+
+namespace LibGL
 {
 	class EventManager
 	{
@@ -26,4 +28,4 @@ namespace PFA::Core
 	};
 }
 
-#include "Core/EventManager.inl"
+#include "Eventing/EventManager.inl"
