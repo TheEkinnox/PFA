@@ -982,6 +982,11 @@ namespace LibMath
 		return *this;
 	}
 
+	Vector3 Vector4::xyz() const
+	{
+		return { m_x, m_y, m_z };
+	}
+
 	float Vector4::dot(Vector4 const& other) const
 	{
 		return this->m_x * other.m_x +

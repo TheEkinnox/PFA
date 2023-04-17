@@ -46,6 +46,8 @@ namespace LibMath
 		Vector4&		operator*=(float const& value);							// multiply all components by a value
 		Vector4&		operator/=(float const& value);							// divide all components by a value
 
+		Vector3			xyz() const;											// return the x, y and z components of the Vector4 (safe slicing)
+
 		float			dot(Vector4 const& other) const;						// return dot product result
 
 		float			magnitudeSquared() const;								// return square value of the vector magnitude
