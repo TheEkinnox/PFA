@@ -1,0 +1,5 @@
+add_subdirectory(irrklang)
+
+# Set shared variables
+set(IRRKLANG_NAME ${IRRKLANG_NAME} PARENT_SCOPE)
+set(IRRKLANG_INCLUDE_DIR ${IRRKLANG_INCLUDE_DIR} PARENT_SCOPE)
