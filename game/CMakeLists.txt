@@ -48,6 +48,16 @@ target_include_directories(${EXE_NAME} PRIVATE ${LIBGL_INCLUDE_DIRS})
 target_link_libraries(${EXE_NAME} PRIVATE ${LIBMATH_NAME})
 target_include_directories(${EXE_NAME} PRIVATE ${LIBMATH_INCLUDE_DIR})
 
+
+###############################
+#                             #
+# IrrKlang                    #
+#                             #
+###############################
+
+target_link_libraries(${EXE_NAME} PRIVATE ${IRRKLANG_NAME})
+target_include_directories(${EXE_NAME} PRIVATE ${IRRKLANG_INCLUDE_DIR})
+
 ###############################
 #                             #
 # Copy the necessary dlls     #
