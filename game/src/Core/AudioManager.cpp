@@ -3,16 +3,16 @@
 
 using namespace irrklang;
 
-PFA::CORE::AudioManager::AudioManager()
+PFA::Core::AudioManager::AudioManager()
 {
 	m_soundEngine = createIrrKlangDevice();
 }
 
-PFA::CORE::AudioManager::~AudioManager()
+PFA::Core::AudioManager::~AudioManager()
 {
 	m_soundEngine->drop();
 }
-const ISoundEngine& PFA::CORE::AudioManager::getSoundEngine()
+const ISoundEngine& PFA::Core::AudioManager::getSoundEngine()
 {
 	return *m_soundEngine;
 }

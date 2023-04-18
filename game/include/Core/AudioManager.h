@@ -1,7 +1,7 @@
 #pragma once
 #include <irrKlang.h>
 
-namespace PFA::CORE
+namespace PFA::Core
 {
 	class AudioManager
 	{
