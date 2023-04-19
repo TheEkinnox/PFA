@@ -8,6 +8,8 @@
 #include "Utility/ServiceLocator.h"
 #include "Utility/Timer.h"
 #include "CapsuleCollider.h"
+#include "Rigidbody.h"
+#include "Raycast.h"
 
 #define CAM_HEIGHT 1.63f		// Player's "eyes" local height
 #define MAX_GROUND_DISTANCE .1f // The maximum distance from the ground at which the player is considered to be touching it
@@ -24,17 +26,15 @@ namespace PFA::Gameplay
 	CharacterController::CharacterController(Entity* parent, const Transform& transform,
 		const float moveSpeed, const float rotationSpeed, const float jumpForce) :
 		Entity(parent, transform),
-		m_camera(this, Transform({0, CAM_HEIGHT, 0}, Vector3::zero(), Vector3::one() / transform.getScale()),
+		m_camera(this, Transform({0.f, CAM_HEIGHT, 0.f}, Vector3::zero(), Vector3::one() / transform.getScale()),
 			Matrix4::perspectiveProjection(90_deg, LGL_SERVICE(Window).getAspect(), .1f, 150.f)),
 		m_moveSpeed(moveSpeed), m_rotationSpeed(rotationSpeed),
 		m_jumpForce(jumpForce)
 	{
 		Camera::setCurrent(m_camera);
 
-		addComponent<CapsuleCollider>(*this, Vector3( 0, getScale().m_y / 2, 0 ), Vector3::up(), 1, .5f);
-
-		// TODO: Uncomment when RigidBody is implemented
-		//addComponent<RigidBody>(*this);
+		addComponent<CapsuleCollider>(Vector3( 0.f, getScale().m_y / 2.f, 0.f ), Vector3::up(), 1.f, .5f);
+		addComponent<Rigidbody>();
 	}
 
 	void CharacterController::update()
@@ -54,6 +54,9 @@ namespace PFA::Gameplay
 
 	void CharacterController::handleKeyboard()
 	{
+		Rigidbody* rb = getComponent<Rigidbody>();
+		ASSERT(rb != nullptr);
+
 		const auto& inputManager = LGL_SERVICE(InputManager);
 		Vector3 moveDir = Vector3::zero();
 
@@ -61,24 +64,27 @@ namespace PFA::Gameplay
 			jump();
 
 		if (inputManager.isKeyDown(EKey::KEY_W))
-			moveDir = forward();
+			moveDir += forward();
 
 		if (inputManager.isKeyDown(EKey::KEY_S))
-			moveDir = back();
+			moveDir += back();
 
 		if (inputManager.isKeyDown(EKey::KEY_A))
-			moveDir = left();
+			moveDir += left();
 
 		if (inputManager.isKeyDown(EKey::KEY_D))
-			moveDir = right();
+			moveDir += right();
 
-		if (moveDir != Vector3::zero())
+		Vector3 targetVelocity;
+
+		if (!floatEquals(m_moveSpeed, 0.f) && moveDir != Vector3::zero())
 		{
 			moveDir.m_y = 0;
-			moveDir.normalize();
+			targetVelocity = moveDir * (m_moveSpeed / moveDir.magnitude());
 		}
 
-		translate(moveDir * m_moveSpeed);
+		targetVelocity.m_y += rb->m_velocity.m_y;
+		rb->m_velocity = targetVelocity;
 	}
 
 	void CharacterController::handleMouse()
@@ -114,21 +120,13 @@ namespace PFA::Gameplay
 
 	void CharacterController::jump()
 	{
-		// TODO: Uncomment when RigidBody is implemented
-		//const Vector3 gravityDir = g_gravity.normalized();
-		//if (!raycast(m_position, gravityDir, MAX_GROUND_DISTANCE))
-		//	return;
-
-		//RigidBody* rb = getComponent<RigidBody>();
-		//ASSERT(rb != nullptr);
-
-		//rb->addForce(m_jumpForce * -gravityDir);
-
-		// TODO: Remove when RigidBody is implemented
-		if (getPosition().m_y > MAX_GROUND_DISTANCE)
+		const Vector3 gravityDir = g_gravity.normalized();
+		if (!raycast(getPosition() + gravityDir * .1f, gravityDir, MAX_GROUND_DISTANCE))
 			return;
 
-		const float jumpDistance = m_jumpForce * LGL_SERVICE(Timer).getDeltaTime();
-		translate({ 0, max(jumpDistance, MAX_GROUND_DISTANCE), 0 });
+		Rigidbody* rb = getComponent<Rigidbody>();
+		ASSERT(rb != nullptr);
+
+		rb->addForce(m_jumpForce * -gravityDir, EForceMode::IMPULSE);
 	}
 }
