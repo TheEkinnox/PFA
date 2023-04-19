@@ -3,6 +3,14 @@ get_filename_component(CURRENT_FOLDER_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
 set(EXE_NAME ${CURRENT_FOLDER_NAME})
 add_executable(${EXE_NAME})
 
+if(MSVC)
+  set_property(TARGET ${EXE_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${EXE_NAME}>")
+  target_compile_options(${EXE_NAME} PRIVATE /W4 /WX)
+  target_link_options(${EXE_NAME} PRIVATE /FORCE:UNRESOLVED)
+else()
+  target_compile_options(${EXE_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
+
 
 ###############################
 #                             #
