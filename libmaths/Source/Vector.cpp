@@ -283,9 +283,29 @@ namespace LibMath
 			&& floatEquals(lhs.m_y, rhs.m_y);
 	}
 
-	bool operator!=(Vector2 const& p_vector2, Vector2 const& p_vector3)
+	bool operator!=(Vector2 const& lhs, Vector2 const& rhs)
 	{
-		return !(p_vector2 == p_vector3);
+		return !(lhs == rhs);
+	}
+
+	bool operator>(Vector2 const& lhs, Vector2 const& rhs)
+	{
+		return lhs.isLongerThan(rhs);
+	}
+
+	bool operator<(Vector2 const& lhs, Vector2 const& rhs)
+	{
+		return rhs > lhs;
+	}
+
+	bool operator>=(Vector2 const& lhs, Vector2 const& rhs)
+	{
+		return !(lhs < rhs);
+	}
+
+	bool operator<=(Vector2 const& lhs, Vector2 const& rhs)
+	{
+		return !(lhs > rhs);
 	}
 
 	Vector2 operator-(const Vector2& vect)
@@ -710,9 +730,29 @@ namespace LibMath
 			&& floatEquals(lhs.m_z, rhs.m_z);
 	}
 
-	bool operator!=(Vector3 const& p_vector3, Vector3 const& p_vector4)
+	bool operator!=(Vector3 const& lhs, Vector3 const& rhs)
 	{
-		return !(p_vector3 == p_vector4);
+		return !(lhs == rhs);
+	}
+
+	bool operator>(Vector3 const& lhs, Vector3 const& rhs)
+	{
+		return lhs.isLongerThan(rhs);
+	}
+
+	bool operator<(Vector3 const& lhs, Vector3 const& rhs)
+	{
+		return rhs > lhs;
+	}
+
+	bool operator>=(Vector3 const& lhs, Vector3 const& rhs)
+	{
+		return !(lhs < rhs);
+	}
+
+	bool operator<=(Vector3 const& lhs, Vector3 const& rhs)
+	{
+		return !(lhs > rhs);
 	}
 
 	Vector3 operator-(const Vector3& vect)
@@ -1039,6 +1079,26 @@ namespace LibMath
 	bool operator!=(Vector4 const& left, Vector4 const& right)
 	{
 		return !(left == right);
+	}
+
+	bool operator>(Vector4 const& left, Vector4 const& right)
+	{
+		return left.isLongerThan(right);
+	}
+
+	bool operator<(Vector4 const& left, Vector4 const& right)
+	{
+		return right > left;
+	}
+
+	bool operator>=(Vector4 const& left, Vector4 const& right)
+	{
+		return !(left < right);
+	}
+
+	bool operator<=(Vector4 const& left, Vector4 const& right)
+	{
+		return !(left > right);
 	}
 
 	Vector4 operator-(const Vector4& vector)

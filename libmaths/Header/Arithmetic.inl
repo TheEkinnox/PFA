@@ -39,7 +39,15 @@ namespace LibMath
 	template <typename T>
 	constexpr T	clamp(T value, T a, T b)
 	{
-		return max(a, min(value, b));
+		const float minVal = min(a, b);
+		const float maxVal = max(a, b);
+		return max(minVal, min(value, maxVal));
+	}
+
+	template <typename T>
+	constexpr T	snap(T value, T a, T b)
+	{
+		return abs(value - a) < abs(value - b) ? a : b;
 	}
 
 	constexpr float wrap(const float value, const float a, const float b)
@@ -119,12 +127,26 @@ namespace LibMath
 		return value < 0 ? -value : value;
 	}
 
+	constexpr float sign(const float value)
+	{
+		return value < 0 ? -1.f : 1.f;
+	}
+
 	// adapted from https://stackoverflow.com/a/15012792
 	constexpr bool floatEquals(const float a, const float b)
 	{
 		const float maxXYOne = max(max(1.0f, abs(a)), abs(b));
 
 		return abs(a - b) <= std::numeric_limits<float>::epsilon() * maxXYOne;
+	}
+
+	template <typename T>
+	constexpr bool isInRange(T value, T a, T b)
+	{
+		const float minVal = min(a, b);
+		const float maxVal = max(a, b);
+
+		return minVal <= value && value <= maxVal;
 	}
 }
 

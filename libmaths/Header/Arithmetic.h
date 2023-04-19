@@ -36,6 +36,16 @@ namespace LibMath
 	constexpr T		clamp(T value, T a, T b);
 
 	/**
+	 * \brief Returns the closest bound of the given range to the received value
+	 * \param value The value to snap
+	 * \param a The first bound of the range
+	 * \param b The second bound of the range
+	 * \return The received value snapped to the closest bound of the given range
+	 */
+	template <typename T>
+	constexpr T		snap(T value, T a, T b);
+
+	/**
 	 * \brief Wraps the given value inside a given range
 	 * \param value The value to wrap
 	 * \param a The first value of the range
@@ -87,12 +97,29 @@ namespace LibMath
 	constexpr float	abs(float value);
 
 	/**
+	 * \brief Returns the sign of the given number
+	 * \paran value The number whose absolute value must be returned
+	 * \return -1 if the number is negative, 1 otherwise
+	 */
+	constexpr float	sign(float value);
+
+	/**
 	 * \brief Checks whether two floats can be considered equal
 	 * \param a The first value to check
 	 * \param b The second value to check
 	 * \return True if a can be considered equal to b. False otherwise.
 	 */
 	constexpr bool	floatEquals(float a, float b);
+
+	/**
+	 * \brief Checks whether a given value is in the given range.
+	 * \param value The value to check
+	 * \param a The lower bound of the range
+	 * \param b The upper bound of the range
+	 * \return True if the value is between a and b inclusive. False otherwise.
+	 */
+	template <typename T>
+	constexpr bool	isInRange(T value, T a, T b);
 }
 
 #include "Arithmetic.inl"

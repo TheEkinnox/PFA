@@ -63,6 +63,12 @@ namespace LibMath
 	bool			operator==(Vector4 const& left, Vector4 const& right);		// Vector4{ 1 } == Vector4::one()					// true						// return whether 2 vectors have the same components
 	bool			operator!=(Vector4 const& left, Vector4 const& right);		// Vector4{ 1 } != Vector4::zero()					// true						// return whether 2 vectors have different components
 
+	bool			operator>(Vector4 const& left, Vector4 const& right);		// Vector4{ 2 } > Vector4::one()					// true						// return whether the left vector's magnitude is greater than the right vector's magnitude
+	bool			operator<(Vector4 const& left, Vector4 const& right);		// Vector4::zero() < Vector4{ 1 }					// true						// return whether the left vector's magnitude is smaller than the right vector's magnitude
+
+	bool			operator>=(Vector4 const& left, Vector4 const& right);		// Vector4{ 1 } == Vector4::one()					// true						// return whether the left vector's magnitude is greater than or equal to the right vector's magnitude
+	bool			operator<=(Vector4 const& left, Vector4 const& right);		// Vector4{ 1 } != Vector4::zero()					// true						// return whether the left vector's magnitude is smaller than or equal to the right vector's magnitude
+
 	Vector4			operator-(const Vector4& vector);							// -Vector4{ .5, 1.5, -2.5, 0 }						// { -.5, -1.5, 2.5, 0 }	// return a copy of a vector with all its component inverted
 
 	Vector4			operator+(Vector4 left, Vector4 const& right);				// Vector4{ .5, 1.5, -2.5, 0 } + Vector4::one()		// { 1.5, 2.5, -1.5, 1 }	// add 2 vectors component wise
@@ -80,6 +86,41 @@ namespace LibMath
 
 	std::ostream&	operator<<(std::ostream& stream, Vector4 const& vector);	// cout << Vector4{ .5, 1.5, -2.5, 1 }				// add a vector string representation to an output stream
 	std::istream&	operator>>(std::istream& stream, Vector4& vector);			// ifstream file{ save.txt }; file >> vector;		// parse a string representation from an input stream into a vector
+
+#ifdef __LIBMATH__ARITHMETIC_H__
+	template<>
+	inline Vector4 clamp<Vector4>(const Vector4 value, const Vector4 a, const Vector4 b)
+	{
+		return
+		{
+			clamp(value.m_x, a.m_x, b.m_x),
+			clamp(value.m_y, a.m_y, b.m_y),
+			clamp(value.m_z, a.m_z, b.m_z),
+			clamp(value.m_w, a.m_w, b.m_w)
+		};
+	}
+
+	template<>
+	inline Vector4 snap<Vector4>(const Vector4 value, const Vector4 a, const Vector4 b)
+	{
+		return
+		{
+			snap(value.m_x, a.m_x, b.m_x),
+			snap(value.m_y, a.m_y, b.m_y),
+			snap(value.m_z, a.m_z, b.m_z),
+			snap(value.m_w, a.m_w, b.m_w)
+		};
+	}
+
+	template <>
+	constexpr bool isInRange<Vector4>(const Vector4 value, const Vector4 a, const Vector4 b)
+	{
+		return isInRange(value.m_x, a.m_x, b.m_x)
+			&& isInRange(value.m_y, a.m_y, b.m_y)
+			&& isInRange(value.m_z, a.m_z, b.m_z)
+			&& isInRange(value.m_w, a.m_w, b.m_w);
+	}
+#endif
 }
 
 #ifdef __LIBMATH__MATRIX__MATRIX4_H__

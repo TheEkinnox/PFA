@@ -88,6 +88,12 @@ namespace LibMath
 	bool			operator==(Vector2 const&, Vector2 const&);			// Vector2{ 1 } == Vector2::one()				// true				// return whether 2 vectors have the same component
 	bool			operator!=(Vector2 const&, Vector2 const&);			// Vector2{ 1 } != Vector2::zero()				// true				// return whether 2 vectors have different components
 
+	bool			operator>(Vector2 const&, Vector2 const&);			// Vector2{ 2 } > Vector2::one()				// true				// return whether the left vector's magnitude is greater than the right vector's magnitude
+	bool			operator<(Vector2 const&, Vector2 const&);			// Vector2::zero() < Vector2{ 1 }				// true				// return whether the left vector's magnitude is smaller than the right vector's magnitude
+
+	bool			operator>=(Vector2 const&, Vector2 const&);			// Vector2{ 1 } == Vector2::one()				// true				// return whether the left vector's magnitude is greater than or equal to the right vector's magnitude
+	bool			operator<=(Vector2 const&, Vector2 const&);			// Vector2{ 1 } != Vector2::zero()				// true				// return whether the left vector's magnitude is smaller than or equal to the right vector's magnitude
+
 	Vector2			operator-(const Vector2&);							// -Vector2{ .5, 1.5 }							// { -.5, -1.5 }	// return a copy of a vector with all its component inverted
 
 	Vector2			operator+(Vector2, Vector2 const&);					// Vector2{ .5, 1.5 } + Vector2::one()			// { 1.5, 2.5 }		// add 2 vectors component wise
@@ -105,6 +111,35 @@ namespace LibMath
 
 	std::ostream&	operator<<(std::ostream&, Vector2 const&);			// cout << Vector2{ .5, 1.5 }					// add a vector string representation to an output stream
 	std::istream&	operator>>(std::istream&, Vector2&);				// ifstream file{ save.txt }; file >> vector;	// parse a string representation from an input stream into a vector
+
+#ifdef __LIBMATH__ARITHMETIC_H__
+	template<>
+	inline Vector2 clamp<Vector2>(const Vector2 value, const Vector2 a, const Vector2 b)
+	{
+		return
+		{
+			clamp(value.m_x, a.m_x, b.m_x),
+			clamp(value.m_y, a.m_y, b.m_y)
+		};
+	}
+
+	template<>
+	inline Vector2 snap<Vector2>(const Vector2 value, const Vector2 a, const Vector2 b)
+	{
+		return
+		{
+			snap(value.m_x, a.m_x, b.m_x),
+			snap(value.m_y, a.m_y, b.m_y)
+		};
+	}
+
+	template <>
+	constexpr bool isInRange<Vector2>(const Vector2 value, const Vector2 a, const Vector2 b)
+	{
+		return isInRange(value.m_x, a.m_x, b.m_x)
+			&& isInRange(value.m_y, a.m_y, b.m_y);
+	}
+#endif
 }
 
 #endif // !__LIBMATH__VECTOR__VECTOR2_H__
