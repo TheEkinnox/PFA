@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Core/EventManager.h"
+#include "Eventing/EventManager.h"
 #include <type_traits>
 #include <ranges>
 
-namespace PFA::Core
+namespace LibGL
 {
 	template <typename EventType>
 	IEvent::ListenerId EventManager::subscribe(typename EventType::Action action)
@@ -20,7 +20,7 @@ namespace PFA::Core
 	}
 
 	template <typename EventType>
-	void EventManager::unsubscribe(IEvent::ListenerId listener)
+	void EventManager::unsubscribe(const IEvent::ListenerId listener)
 	{
 		static_assert(std::is_base_of_v<IEvent, EventType>);
 

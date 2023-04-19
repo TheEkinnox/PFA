@@ -2,7 +2,7 @@
 #include "Core/EventDefs.h"
 #include "Core/GameContext.h"
 
-#include "Debug/Log.h"
+#include "Eventing/EventManager.h"
 #include "Utility/ServiceLocator.h"
 
 using namespace PFA::Events;
@@ -24,7 +24,12 @@ namespace PFA::Core
 		const auto& inputManager = LGL_SERVICE(InputManager);
 
 		if (inputManager.isKeyDown(EKey::KEY_ESCAPE))
-			LGL_SERVICE(EventManager).broadcast<ExitEvent>();
+			LGL_SERVICE(LibGL::EventManager).broadcast<ExitEvent>();
+
+#ifdef _DEBUG
+		if (inputManager.isKeyDown(EKey::KEY_R))
+			LGL_SERVICE(LibGL::EventManager).broadcast<RestartEvent>();
+#endif
 	}
 
 	void GameApp::onStop()

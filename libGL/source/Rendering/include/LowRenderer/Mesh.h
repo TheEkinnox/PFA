@@ -10,17 +10,23 @@ namespace LibGL::Resources
 
 namespace LibGL::Rendering
 {
-	class Mesh : public Resources::SceneNode
+	class Mesh : public Entity
 	{
 	public:
-						Mesh() = delete;
-		explicit	Mesh(SceneNode* parent, const Resources::Model& model, const Material& material);
-						Mesh(const Mesh& other) = default;
-						Mesh(Mesh&& other) noexcept = default;
-						~Mesh() override = default;
+					Mesh() = delete;
+		explicit	Mesh(Entity* parent, const Resources::Model& model, const Material& material);
+					Mesh(const Mesh& other) = default;
+					Mesh(Mesh&& other) noexcept = default;
+					~Mesh() override = default;
 
 		Mesh&		operator=(const Mesh& other) = default;
 		Mesh&		operator=(Mesh&& other) noexcept = default;
+
+		/**
+		 * \brief Gets the mesh's model
+		 * \return The mesh's current model
+		 */
+		const Resources::Model* getModel() const;
 
 		/**
 		 * \brief Sets the mesh's model
@@ -29,10 +35,16 @@ namespace LibGL::Rendering
 		void setModel(const Resources::Model& model);
 
 		/**
-		 * \brief Sets the mesh's material
-		 * \param material The mesh's new material
+		 * \brief Gets the mesh's material
+		 * \return A copy of the mesh's material
 		 */
-		void setMaterial(const Material& material);
+		Material getMaterial() const;
+
+		/**
+		 * \brief Gets the mesh's material
+		 * \return A reference to the mesh's material
+		 */
+		Material& getMaterial();
 
 		/**
 		 * \brief Draws the mesh

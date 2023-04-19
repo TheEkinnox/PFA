@@ -1,9 +1,10 @@
 #pragma once
 #include "IContext.h"
 #include "InputManager.h"
-#include "LowRenderer/Camera.h"
 #include "Resources/ResourcesManager.h"
-#include "Core/EventManager.h"
+#include "Eventing/EventManager.h"
+#include "Core/Renderer.h"
+#include "Gameplay/Scenes/IGameScene.h"
 
 namespace PFA::Core
 {
@@ -13,15 +14,38 @@ namespace PFA::Core
 		GameContext();
 		~GameContext() override;
 
+		/**
+		 * \brief Updates the game context
+		 */
 		void update() override;
-		void bindExitFunc();
 
 	private:
-		IEvent::ListenerId									m_exitListenerId = 0;
+		LibGL::IEvent::ListenerId							m_exitListenerId = 0;
+		LibGL::IEvent::ListenerId							m_restartListenerId = 0;
 
 		std::unique_ptr<LibGL::Rendering::Camera>			m_camera;
+		std::unique_ptr<LibGL::Rendering::Renderer>			m_renderer;
 		std::unique_ptr<LibGL::Application::InputManager>	m_inputManager;
 		std::unique_ptr<LibGL::Resources::ResourceManager>	m_resourcesManager;
-		std::unique_ptr<EventManager>						m_eventManager;
+		std::unique_ptr<LibGL::EventManager>				m_eventManager;
+		std::unique_ptr<Gameplay::IGameScene>				m_scene;
+
+		/**
+		 * \brief Binds the game's exit function
+		 */
+		void bindExitFunc();
+
+		/**
+		 * \brief Binds the game's restart function
+		 */
+		void bindRestartFunc();
+
+		/**
+		 * \brief Loads (or reloads) the game scene
+		 */
+		template <typename SceneT>
+		void loadScene();
 	};
 }
+
+#include "Core/GameContext.inl"

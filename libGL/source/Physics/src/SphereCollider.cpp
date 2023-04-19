@@ -1,3 +1,4 @@
+#include "Arithmetic.h"
 #include "SphereCollider.h"
 #include "CapsuleCollider.h"
 #include "BoxCollider.h"
@@ -9,14 +10,19 @@ using namespace LibMath;
 namespace LibGL::Physics
 {
 	SphereCollider::SphereCollider(Entity& owner, const Vector3& center,
-		const float radius) : ICollider(owner, Bounds{ center, Vector3(radius * 2)}),
+		const float radius) : ICollider(owner, Bounds{ center, Vector3(radius * 2), radius}),
 		m_center(center), m_radius(radius)
 	{
 	}
 
 	bool SphereCollider::check(const Vector3& point) const
 	{
-		return point.distanceSquaredFrom(m_center) <= m_radius * m_radius;
+		return ICollider::check(point);
+	}
+
+	bool SphereCollider::check(const Ray& ray) const
+	{
+		return ICollider::check(ray);
 	}
 
 	bool SphereCollider::check(const ICollider& other) const
@@ -53,7 +59,7 @@ namespace LibGL::Physics
 			return false;
 
 		const auto center = getBounds().m_center;
-		const auto radius = getBounds().getSphereRadius();
+		const auto radius = getBounds().m_sphereRadius;
 
 		const auto capsuleCenter = other.getBounds().m_center;
 		const auto capsuleRadius = other.getRadius();
@@ -68,5 +74,17 @@ namespace LibGL::Physics
 			capsuleOrientedHeight / 2.f + capsuleCenter);
 
 		return center.distanceSquaredFrom(closestPoint) <= totalRadius * totalRadius;
+	}
+
+	Vector3 SphereCollider::getClosestPoint(const Vector3& point) const
+	{
+		const auto [ center, _, radius ] = getBounds();
+		return center + (point - center).normalized() * min(radius, center.distanceFrom(point));
+	}
+
+	Vector3 SphereCollider::getClosestPointOnSurface(const Vector3& point) const
+	{
+		const auto [center, _, radius] = getBounds();
+		return center + (point - center).normalized() * radius;
 	}
 }

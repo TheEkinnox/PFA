@@ -12,9 +12,14 @@ using namespace LibGL::Resources;
 
 namespace LibGL::Rendering
 {
-	Mesh::Mesh(SceneNode* parent, const Model& model, const Material& material)
-		: SceneNode(parent, Transform()), m_model(&model), m_material(material)
+	Mesh::Mesh(Entity* parent, const Model& model, const Material& material)
+		: Entity(parent, Transform()), m_model(&model), m_material(material)
 	{
+	}
+
+	const Model* Mesh::getModel() const
+	{
+		return m_model;
 	}
 
 	void Mesh::setModel(const Model& model)
@@ -22,9 +27,14 @@ namespace LibGL::Rendering
 		m_model = &model;
 	}
 
-	void Mesh::setMaterial(const Material& material)
+	Material Mesh::getMaterial() const
 	{
-		m_material = material;
+		return m_material;
+	}
+
+	Material& Mesh::getMaterial()
+	{
+		return m_material;
 	}
 
 	void Mesh::draw() const
@@ -49,6 +59,6 @@ namespace LibGL::Rendering
 	{
 		draw();
 
-		SceneNode::update();
+		Entity::update();
 	}
 }

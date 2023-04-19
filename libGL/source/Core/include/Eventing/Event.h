@@ -2,7 +2,7 @@
 
 #include <functional>
 
-namespace PFA::Core
+namespace LibGL
 {
 	/**
 	 * \brief Non-templated part of an Event
@@ -15,7 +15,7 @@ namespace PFA::Core
 		virtual ~IEvent() = default;
 
 		virtual void unsubscribe(ListenerId listener) = 0;
-		virtual size_t subscribersCount() = 0;
+		virtual size_t subscribersCount() const = 0;
 		virtual void clear() = 0;
 
 	protected:
@@ -46,13 +46,13 @@ namespace PFA::Core
 		 * \brief Gets the current number of subscribed actions
 		 * \return The number of subscribed actions
 		 */
-		size_t subscribersCount() override;
+		size_t subscribersCount() const override;
 
 		/**
 		 * \brief Invokes all actions linked to this event
 		 * \param args The arguments to pass when calling the actions
 		 */
-		void invoke(ArgTypes... args);
+		void invoke(ArgTypes... args) const;
 
 		/**
 		 * \brief Unsubscribes all listeners from this event
@@ -64,4 +64,4 @@ namespace PFA::Core
 	};
 }
 
-#include "Core/Event.inl"
+#include "Eventing/Event.inl"
