@@ -13,6 +13,7 @@ add_subdirectory(libmaths)
 set(LIBGL_BUILD_DEMO OFF)
 add_subdirectory(libGL)
 
+add_subdirectory(external)
 add_subdirectory(game)
 
 if (MSVC)
