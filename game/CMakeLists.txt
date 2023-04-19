@@ -72,12 +72,11 @@ file(GLOB_RECURSE ASSETS_FILES
 	${ASSETS_DIR}/textures/*)
 
 target_sources(${EXE_NAME} PRIVATE ${ASSETS_FILES})
-
 source_group(TREE ${ASSETS_DIR} PREFIX Assets FILES ${ASSETS_FILES})
 
 # remove the existing assets folder from the build directory (ensures removes are also replicated)
 add_custom_command(TARGET ${EXE_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E rm -rf $<TARGET_FILE_DIR:${EXE_NAME}>/${ASSETS_DIR_NAME})
+    COMMAND ${CMAKE_COMMAND} -E rm -rf $<TARGET_FILE_DIR:${EXE_NAME}>/assets)
 
 # copy the assets folder in the target build directory
 add_custom_command(TARGET ${EXE_NAME} POST_BUILD
