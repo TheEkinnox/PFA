@@ -42,7 +42,8 @@ namespace PFA::Core
 		ServiceLocator::provide<ResourceManager>(*m_resourcesManager);
 		ServiceLocator::provide<EventManager>(*m_eventManager);
 
-		m_camera->setProjectionMatrix(Matrix4::perspectiveProjection(90_deg, LGL_SERVICE(Window).getAspect(), .1f, 150.f));
+		m_camera->setProjectionMatrix(Matrix4::perspectiveProjection(90_deg,
+			LGL_SERVICE(Window).getAspect(), .1f, 150.f));
 
 		Camera::setCurrent(*m_camera);
 
@@ -63,6 +64,8 @@ namespace PFA::Core
 		m_renderer->clear(Camera::getCurrent());
 
 		m_scene->update();
+
+		LGL_SERVICE(Window).swapBuffers();
 	}
 
 	void GameContext::bindExitFunc()

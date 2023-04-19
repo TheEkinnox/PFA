@@ -13,6 +13,13 @@ namespace PFA::Gameplay
 		 */
 		virtual IGameScene& load();
 
+		IGameScene(const IGameScene& other) = default;
+		IGameScene(IGameScene&& other) = default;
+		~IGameScene() override = default;
+
+		IGameScene& operator=(const IGameScene& other) = default;
+		IGameScene& operator=(IGameScene&& other) = default;
+
 	protected:
 		IGameScene(const LibMath::Vector3& spawnPoint, const LibMath::Vector3& spawnRotation);
 

@@ -9,10 +9,10 @@ namespace LibGL::Physics
 
 namespace PFA::Gameplay
 {
-	class CharacterController final : public LibGL::Entity
+	class CharacterController final : public LibGL::Component
 	{
 	public:
-		CharacterController(Entity* parent, const Transform& transform,
+		CharacterController(LibGL::Entity& owner, LibMath::Vector3 groundCheckPos,
 			float moveSpeed, float rotationSpeed, float jumpForce);
 
 		/**
@@ -21,23 +21,24 @@ namespace PFA::Gameplay
 		void update() override;
 
 	private:
-		float	m_moveSpeed;
-		float	m_rotationSpeed;
-		float	m_jumpForce;
+		LibMath::Vector3	m_groundCheckPos;
+		float				m_moveSpeed;
+		float				m_rotationSpeed;
+		float				m_jumpForce;
 
 		/**
 		 * \brief Handle keyboard inputs
 		 */
-		void handleKeyboard();
+		void handleKeyboard() const;
 
 		/**
 		 * \brief Handle mouse movement and inputs
 		 */
-		void handleMouse();
+		void handleMouse() const;
 
 		/**
 		 * \brief Makes the player jump
 		 */
-		void jump();
+		void jump() const;
 	};
 }
