@@ -21,10 +21,9 @@ namespace PFA::Gameplay
 		void update() override;
 
 	private:
-		LibGL::Rendering::Camera	m_camera;
-		float						m_moveSpeed;
-		float						m_rotationSpeed;
-		float						m_jumpForce;
+		float	m_moveSpeed;
+		float	m_rotationSpeed;
+		float	m_jumpForce;
 
 		/**
 		 * \brief Handle keyboard inputs

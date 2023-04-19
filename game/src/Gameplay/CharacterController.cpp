@@ -1,6 +1,5 @@
-#include "Gameplay/CharacterController.h"
-
 #include "Arithmetic.h"
+#include "Gameplay/CharacterController.h"
 #include "Angle/Degree.h"
 #include "InputManager.h"
 #include "Window.h"
@@ -26,12 +25,16 @@ namespace PFA::Gameplay
 	CharacterController::CharacterController(Entity* parent, const Transform& transform,
 		const float moveSpeed, const float rotationSpeed, const float jumpForce) :
 		Entity(parent, transform),
-		m_camera(this, Transform({0.f, CAM_HEIGHT, 0.f}, Vector3::zero(), Vector3::one() / transform.getScale()),
-			Matrix4::perspectiveProjection(90_deg, LGL_SERVICE(Window).getAspect(), .1f, 150.f)),
 		m_moveSpeed(moveSpeed), m_rotationSpeed(rotationSpeed),
 		m_jumpForce(jumpForce)
 	{
-		Camera::setCurrent(m_camera);
+		Camera& cam = Camera::getCurrent();
+
+		cam.setPosition({ 0.f, CAM_HEIGHT, 0.f });
+		cam.setRotation(Vector3::zero());
+		cam.setScale(Vector3::one() / transform.getScale());
+
+		Entity::addChild(cam);
 
 		addComponent<CapsuleCollider>(Vector3( 0.f, getScale().m_y / 2.f, 0.f ), Vector3::up(), 1.f, .5f);
 		addComponent<Rigidbody>();
@@ -43,13 +46,6 @@ namespace PFA::Gameplay
 
 		handleKeyboard();
 		handleMouse();
-
-		// TODO: Remove when RigidBody is implemented
-		if (getPosition().m_y > 0)
-		{
-			const float gravity = -9.8f * LGL_SERVICE(Timer).getDeltaTime();
-			translate({ 0, clamp(gravity, 0.f, -getPosition().m_y), 0 });
-		}
 	}
 
 	void CharacterController::handleKeyboard()
@@ -91,7 +87,7 @@ namespace PFA::Gameplay
 	{
 		const auto& inputManager = LGL_SERVICE(InputManager);
 		const float deltaTime = LGL_SERVICE(Timer).getDeltaTime();
-		auto& camera = m_camera;
+		auto& camera = Camera::getCurrent();
 
 		//update camera rotation
 		const float rotationSpeed = m_rotationSpeed * deltaTime;
