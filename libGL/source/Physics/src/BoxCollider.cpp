@@ -1,8 +1,9 @@
+#include "Arithmetic.h"
 #include "BoxCollider.h"
 #include "SphereCollider.h"
 #include "CapsuleCollider.h"
 
-#include "Arithmetic.h"
+#include "Vector/Vector3.h"
 #include "Debug/Log.h"
 
 using namespace LibMath;
@@ -74,7 +75,7 @@ namespace LibGL::Physics
 
 		const auto sphereCenter = other.getBounds().m_center;
 
-		// If the closest point to the sphere's center is in th sphere, the box and sphere collide
+		// If the closest point to the sphere's center is in the sphere, the box and sphere collide
 		return other.check(getClosestPoint(sphereCenter));
 	}
 
@@ -94,12 +95,48 @@ namespace LibGL::Physics
 		const auto min = center - size;
 		const auto max = center + size;
 
-		return
+		return clamp(point, min, max);
+	}
+
+	Vector3 BoxCollider::getClosestPointOnSurface(const Vector3& point) const
+	{
+		const auto [center, size, _] = getBounds();
+		const auto minCorner = center - size;
+		const auto maxCorner = center + size;
+
+		if (!(minCorner.m_x <= point.m_x && maxCorner.m_x >= point.m_x &&
+			minCorner.m_y <= point.m_y && maxCorner.m_y >= point.m_y &&
+			minCorner.m_z <= point.m_z && maxCorner.m_z >= point.m_z))
+			return clamp(point, minCorner, maxCorner);
+
+		const Vector3 snappedX
 		{
-			clamp(point.m_x, min.m_x, max.m_x),
-			clamp(point.m_y, min.m_y, max.m_y),
-			clamp(point.m_z, min.m_z, max.m_z)
+			snap(point.m_x, minCorner.m_x, maxCorner.m_x),
+			point.m_y,
+			point.m_z
 		};
+
+		const Vector3 snappedY
+		{
+			point.m_x,
+			snap(point.m_y, minCorner.m_y, maxCorner.m_y),
+			point.m_z
+		};
+
+		const Vector3 snappedZ
+		{
+			point.m_x,
+			point.m_y,
+			snap(point.m_z, minCorner.m_z, maxCorner.m_z)
+		};
+
+		const float minDist = min(point.distanceSquaredFrom(snappedX),
+			min(point.distanceSquaredFrom(snappedY),
+				point.distanceSquaredFrom(snappedZ)));
+
+		return floatEquals(minDist, point.distanceSquaredFrom(snappedX)) ? snappedX :
+			floatEquals(minDist, point.distanceSquaredFrom(snappedY)) ? snappedY :
+			snappedZ;
 	}
 
 	Bounds BoxCollider::calculateBounds(const Vector3& center, const Vector3& size)
