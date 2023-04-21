@@ -1,4 +1,5 @@
 #pragma once
+#include "AudioManager.h"
 #include "IContext.h"
 #include "InputManager.h"
 #include "Resources/ResourcesManager.h"
@@ -23,11 +24,11 @@ namespace PFA::Core
 		LibGL::IEvent::ListenerId							m_exitListenerId = 0;
 		LibGL::IEvent::ListenerId							m_restartListenerId = 0;
 
-		std::unique_ptr<LibGL::Rendering::Camera>			m_camera;
 		std::unique_ptr<LibGL::Rendering::Renderer>			m_renderer;
 		std::unique_ptr<LibGL::Application::InputManager>	m_inputManager;
 		std::unique_ptr<LibGL::Resources::ResourceManager>	m_resourcesManager;
 		std::unique_ptr<LibGL::EventManager>				m_eventManager;
+		std::unique_ptr<Core::AudioManager>					m_audioManager;
 		std::unique_ptr<Gameplay::IGameScene>				m_scene;
 
 		/**

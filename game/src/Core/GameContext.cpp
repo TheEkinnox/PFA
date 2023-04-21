@@ -7,7 +7,6 @@
 #include "LowRenderer/Mesh.h"
 #include "Resources/Texture.h"
 #include "Utility/ServiceLocator.h"
-#include "Angle/Degree.h"
 
 // TODO (NTH) : Load config from a file
 #define WINDOW_WIDTH 1280
@@ -16,7 +15,6 @@
 
 using namespace LibGL;
 using namespace LibMath;
-using namespace LibMath::Literal;
 using namespace LibGL::Utility;
 using namespace LibGL::Application;
 using namespace LibGL::Resources;
@@ -28,11 +26,11 @@ namespace PFA::Core
 {
 	GameContext::GameContext() :
 		IContext(WINDOW_WIDTH, WINDOW_HEIGHT, APP_TITLE),
-		m_camera(std::make_unique<Camera>()),
 		m_renderer(std::make_unique<Renderer>()),
 		m_inputManager(std::make_unique<InputManager>(*m_window)),
 		m_resourcesManager(std::make_unique<ResourceManager>()),
 		m_eventManager(std::make_unique<EventManager>()),
+		m_audioManager(std::make_unique<AudioManager>()),
 		m_scene(std::make_unique<Level1>())
 	{
 		Debug::Log::openFile("console.log");
@@ -40,15 +38,14 @@ namespace PFA::Core
 		ServiceLocator::provide<Renderer>(*m_renderer);
 		ServiceLocator::provide<InputManager>(*m_inputManager);
 		ServiceLocator::provide<ResourceManager>(*m_resourcesManager);
+		ServiceLocator::provide<AudioManager>(*m_audioManager);
 		ServiceLocator::provide<EventManager>(*m_eventManager);
-
-		m_camera->setProjectionMatrix(Matrix4::perspectiveProjection(90_deg,
-			LGL_SERVICE(Window).getAspect(), .1f, 150.f));
-
-		Camera::setCurrent(*m_camera);
 
 		bindExitFunc();
 		bindRestartFunc();
+
+		// Lock the mouse to the center of the window
+		m_window->disableCursor();
 
 		m_scene->load();
 	}
@@ -61,10 +58,12 @@ namespace PFA::Core
 	void GameContext::update()
 	{
 		IContext::update();
+		m_inputManager->updateMouse();
 		m_renderer->clear(Camera::getCurrent());
 
 		m_scene->update();
 
+		m_audioManager->getSoundEngine().update();
 		LGL_SERVICE(Window).swapBuffers();
 	}
 
