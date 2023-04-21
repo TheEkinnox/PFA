@@ -165,28 +165,8 @@ namespace LibGL::Resources
 
 				ASSERT(faceStrings.size() == 3 || faceStrings.size() == 4);
 
-				uint32_t verticesCount;
-				uint32_t* faceIndices;
-
-				if (faceStrings.size() == 3)
-				{
-					verticesCount = 3;
-					faceIndices = static_cast<uint32_t*>(alloca(3 * sizeof(uint32_t)));
-					faceIndices[0] = 0;
-					faceIndices[1] = 1;
-					faceIndices[2] = 2;
-				}
-				else
-				{
-					verticesCount = 6;
-					faceIndices = static_cast<uint32_t*>(alloca(6 * sizeof(uint32_t)));
-					faceIndices[0] = 0;
-					faceIndices[1] = 1;
-					faceIndices[2] = 2;
-					faceIndices[3] = 0;
-					faceIndices[4] = 2;
-					faceIndices[5] = 3;
-				}
+				size_t verticesCount = faceStrings.size();
+				const uint32_t* faceIndices = getFaceIndices(verticesCount);
 
 				for (size_t i = 0; i < verticesCount; i++)
 				{
@@ -261,5 +241,33 @@ namespace LibGL::Resources
 
 		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_indices.size()),
 			GL_UNSIGNED_INT, nullptr);
+	}
+
+	const uint32_t* Model::getFaceIndices(size_t& vertexCount)
+	{
+		switch (vertexCount)
+		{
+		case 3:
+		{
+			static constexpr uint32_t triIndices[3]{ 0, 1, 2 };
+			return triIndices;
+		}
+		case 4:
+		{
+			vertexCount = 6;
+			static constexpr uint32_t quadIndices[6]
+			{
+				0, 1, 2,
+				0, 2, 3
+			};
+
+			return quadIndices;
+		}
+		default:
+		{
+			vertexCount = 0;
+			return nullptr;
+		}
+		}
 	}
 }

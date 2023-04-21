@@ -65,5 +65,14 @@ namespace LibGL::Resources
 		Rendering::VertexBuffer	m_vbo;
 		Rendering::IndexBuffer	m_ebo;
 		VertexAttributes		m_vao;
+
+		/**
+		 * \brief Gets an array of indices to make the shape
+		 * with the given vertex count out of triangles
+		 * \param vertexCount The original number of vertices
+		 * (serves as an out variable for the index count)
+		 * \return The final array of indices
+		 */
+		static const uint32_t* getFaceIndices(size_t& vertexCount);
 	};
 }
