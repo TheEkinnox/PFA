@@ -17,20 +17,20 @@ namespace LibGL::Utility
 		else
 		{
 			// get the formatted text's size
-			const int intSize = std::snprintf(nullptr, 0, format, args...) + 1;
+			const int bufferSize = std::snprintf(nullptr, 0, format, args...) + 1;
 
-			if (intSize <= 0)
+			if (bufferSize <= 0)
 				throw std::runtime_error("Unable to print to log - formatting failed.");
 
 			// Create a buffer of the computed size
-			const size_t bufferSize = intSize;
-			char* const buffer = static_cast<char*>(alloca(bufferSize * sizeof(char)));
+			std::vector<char> buffer;
+			buffer.reserve(bufferSize);
 
 			// Write the formatted string in the buffer
-			std::snprintf(buffer, bufferSize, format, args...);
+			std::snprintf(buffer.data(), bufferSize, format, args...);
 
 			// Copy the buffer data into an std::string
-			std::string message(buffer, buffer + bufferSize - 1);
+			std::string message(buffer.data(), buffer.data() + bufferSize - 1);
 
 			return message;
 		}
