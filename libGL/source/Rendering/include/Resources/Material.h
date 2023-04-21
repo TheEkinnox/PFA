@@ -28,8 +28,8 @@ namespace LibGL::Rendering
 
 		struct UVModifiers
 		{
-			LibMath::Vector2	m_offset;
-			LibMath::Vector2	m_scale;
+			LibMath::Vector2	m_offset = LibMath::Vector2::zero();
+			LibMath::Vector2	m_scale = LibMath::Vector2::one();
 		};
 
 		Material() = delete;
