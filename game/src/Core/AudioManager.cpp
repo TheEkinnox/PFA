@@ -12,7 +12,7 @@ PFA::Core::AudioManager::~AudioManager()
 {
 	m_soundEngine->drop();
 }
-const ISoundEngine& PFA::Core::AudioManager::getSoundEngine()
+ISoundEngine& PFA::Core::AudioManager::getSoundEngine() const
 {
 	return *m_soundEngine;
 }
