@@ -9,7 +9,7 @@ namespace PFA::Core
 		
 		AudioManager();
 		~AudioManager();
-		const irrklang::ISoundEngine& getSoundEngine();
+		irrklang::ISoundEngine& getSoundEngine() const;
 
 	private:
 		irrklang::ISoundEngine* m_soundEngine;
