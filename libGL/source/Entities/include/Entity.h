@@ -15,7 +15,7 @@ namespace LibGL
 
 	public:
 		Entity() = default;
-		Entity(Entity* parent, const Transform& transform);
+		Entity(Node* parent, const Transform& transform);
 		Entity(const Entity& other);
 		Entity(Entity&& other) noexcept;
 		~Entity() override;
@@ -52,12 +52,6 @@ namespace LibGL
 
 		template <typename T>
 		std::vector<std::shared_ptr<T>> getComponents();
-
-		/**
-		 * \brief Adds the given node as a child of the current node
-		 * \param child A pointer to the child to add to the current node
-		 */
-		void addChild(Node& child) override;
 
 		/**
 		 * \brief Removes the given node from this node's children

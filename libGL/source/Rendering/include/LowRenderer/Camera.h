@@ -20,7 +20,7 @@ namespace LibGL::Rendering
 		 * \param transform The camera's initial transform
 		 * \param projectionMatrix The camera's projection matrix
 		 */
-		explicit Camera(Entity* parent, const LibMath::Transform& transform, LibMath::Matrix4 projectionMatrix);
+		Camera(Node* parent, const LibMath::Transform& transform, LibMath::Matrix4 projectionMatrix);
 
 		/**
 		 * \brief Creates a copy of a given camera

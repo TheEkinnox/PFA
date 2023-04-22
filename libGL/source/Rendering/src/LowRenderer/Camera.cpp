@@ -14,7 +14,7 @@ namespace LibGL::Rendering
 		updateMatrices();
 	}
 
-	Camera::Camera(Entity* parent, const Transform& transform, Matrix4 projectionMatrix)
+	Camera::Camera(Node* parent, const Transform& transform, Matrix4 projectionMatrix)
 		: Entity(parent, transform), m_projectionMatrix(std::move(projectionMatrix))
 	{
 		updateMatrices();
@@ -44,6 +44,8 @@ namespace LibGL::Rendering
 		if (&other == this)
 			return *this;
 
+		Entity::operator=(other);
+
 		m_projectionMatrix = other.m_projectionMatrix;
 
 		updateMatrices();
@@ -55,6 +57,8 @@ namespace LibGL::Rendering
 	{
 		if (&other == this)
 			return *this;
+
+		Entity::operator=(other);
 
 		m_projectionMatrix = std::move(other.m_projectionMatrix);
 

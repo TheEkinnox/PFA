@@ -1,7 +1,5 @@
 #include "LowRenderer/Mesh.h"
 
-#include <glad/glad.h>
-
 #include "LowRenderer/Camera.h"
 #include "Resources/Model.h"
 #include "Resources/Shader.h"
@@ -12,7 +10,7 @@ using namespace LibGL::Resources;
 
 namespace LibGL::Rendering
 {
-	Mesh::Mesh(Entity* parent, const Model& model, const Material& material)
+	Mesh::Mesh(Node* parent, const Model& model, const Material& material)
 		: Entity(parent, Transform()), m_model(&model), m_material(material)
 	{
 	}

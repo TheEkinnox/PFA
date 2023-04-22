@@ -1,10 +1,19 @@
 #include "Entity.h"
 
+#include "Debug/Assertion.h"
+#include "Vector/Vector4.h"
+
+using namespace LibMath;
+
 namespace LibGL
 {
-	Entity::Entity(Entity* parent, const Transform& transform) :
+	Entity::Entity(Node* parent, const Transform& transform) :
 		Node(parent), Transform(transform)
 	{
+		ASSERT(parent == nullptr || typeid(parent) == typeid(Entity*) ||
+			dynamic_cast<Entity*>(parent) != nullptr);
+
+		updateGlobalTransform();
 	}
 
 	Entity::Entity(const Entity& other) :
@@ -75,6 +84,8 @@ namespace LibGL
 
 		updateGlobalTransform();
 
+		other.m_components.clear();
+
 		return *this;
 	}
 
@@ -115,8 +126,8 @@ namespace LibGL
 		for (const auto& component : m_components)
 			component->update();
 
-		for (Node* child : getChildren())
-			reinterpret_cast<Entity*>(child)->update();
+		for (const NodePtr& child : getChildren())
+			reinterpret_cast<Entity*>(child.get())->update();
 	}
 
 	void Entity::onChange()
@@ -125,16 +136,16 @@ namespace LibGL
 
 		updateGlobalTransform();
 
-		for (auto* child : getChildren())
+		for (const NodePtr& child : getChildren())
 			if (child != nullptr)
-				reinterpret_cast<Entity*>(child)->updateGlobalTransform();
+				reinterpret_cast<Entity*>(child.get())->onChange();
 	}
 
 	void Entity::updateGlobalTransform()
 	{
 		m_globalTransform = static_cast<Transform>(*this);
 
-		const Entity* castParent = reinterpret_cast<Entity*>(getParent());
+		const Entity* castParent = dynamic_cast<Entity*>(getParent());
 
 		if (castParent != nullptr)
 		{
@@ -143,12 +154,6 @@ namespace LibGL
 			m_globalTransform.rotate(parentTransform.getRotation());
 			m_globalTransform.scale(parentTransform.getScale());
 		}
-	}
-
-	void Entity::addChild(Node& child)
-	{
-		Node::addChild(child);
-		reinterpret_cast<Entity&>(child).updateGlobalTransform();
 	}
 
 	void Entity::removeChild(Node& child)
