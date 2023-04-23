@@ -26,9 +26,7 @@ void main()
 }
 
 #shader fragment
-#version 330 core
-
-#define NB_POINT_LIGHTS 4
+#version 430 core
 
 struct DirLight
 {
@@ -52,8 +50,8 @@ struct SpotLight
 {
 	vec4	color;
 
-	vec3	position;
 	vec3	direction;
+	vec3	position;
 
 	float	constant;
 	float	linear;
@@ -85,10 +83,10 @@ in VS_OUT
 
 out vec4 FragColor;
 
-uniform vec4		u_ambient;
-uniform DirLight	u_dirLight;
-uniform PointLight	u_pointLights[NB_POINT_LIGHTS];
-uniform SpotLight	u_spotLight;
+layout(std430, binding = 0) buffer LightSSBO
+{
+	mat4 ssbo_lights[];
+};
 
 uniform vec3		u_viewPos;
 
@@ -101,9 +99,11 @@ vec4 g_specColor;
 
 int  unpack(int data, int offset, int bitCount);
 vec3 calculateBlinnPhong(vec3 lightDir, vec4 diffuse, vec4 specular);
-vec3 calculateDirLight(DirLight light);
-vec3 calculatePointLight(PointLight light);
-vec3 calculateSpotLight(SpotLight light);
+
+vec3 calculateLight(mat4 lightMat);
+vec3 calculateDirLight(mat4 lightMat);
+vec3 calculatePointLight(mat4 lightMat);
+vec3 calculateSpotLight(mat4 lightMat);
 
 void main()
 {
@@ -113,10 +113,10 @@ void main()
 	bool useSpecMap = unpack(u_material.usedMaps, 1, 1) == 1;
 	bool useDiffuseMap = unpack(u_material.usedMaps, 2, 1) == 1;
 
-	// TODO: Implement normal mapping properly
-	if (useNormalMap)
-		g_normal = normalize(texture(u_material.normal, texCoords).rgb);
-	else
+	// TODO(NTH): Implement normal mapping properly
+	//if (useNormalMap)
+	//	g_normal = normalize(texture(u_material.normal, texCoords).rgb);
+	//else
 		g_normal = normalize(fs_in.Normal);
 
 	if (useSpecMap)
@@ -131,16 +131,12 @@ void main()
 
 	g_viewDir = normalize(u_viewPos - fs_in.FragPos);
 
-	vec3 litColor = u_ambient.rgb * g_diffColor.rgb;
+	vec3 litColor = vec3(0);
 
-	litColor += calculateDirLight(u_dirLight);
+	for (int i = 0; i < ssbo_lights.length(); i++)
+		litColor += calculateLight(ssbo_lights[i]);
 
-	for (int i = 0; i < NB_POINT_LIGHTS; i++)
-		litColor += calculatePointLight(u_pointLights[i]);
-
-	litColor += calculateSpotLight(u_spotLight);
-
-	FragColor = vec4(litColor, g_diffColor.w);
+	FragColor = vec4(litColor, g_diffColor.a * 0.15);
 }
 
 int unpack(int data, int offset, int bitCount)
@@ -168,15 +164,45 @@ vec3 calculateBlinnPhong(vec3 lightDir, vec4 lightColor)
 	return (diffuseColor + specColor) * lightColor.a;
 }
 
-vec3 calculateDirLight(DirLight light)
+vec3 calculateLight(mat4 lightMat)
 {
+	switch(int(lightMat[3][3]))
+	{
+	case 0:
+		return lightMat[0].rgb * lightMat[0].a * g_diffColor.rgb;
+	case 1:
+		return calculateDirLight(lightMat);
+	case 2:
+		return calculatePointLight(lightMat);
+	case 3:
+		return calculateSpotLight(lightMat);
+	default:
+		return vec3(0);
+	}
+}
+
+vec3 calculateDirLight(mat4 lightMat)
+{
+	DirLight light =
+	{
+		lightMat[0],
+		{ lightMat[1][0], lightMat[2][0], lightMat[3][0] }
+	};
+
 	vec3 lightDir = normalize(-light.direction);
 
 	return calculateBlinnPhong(lightDir, light.color);
 }
 
-vec3 calculatePointLight(PointLight light)
+vec3 calculatePointLight(mat4 lightMat)
+{
+	PointLight light =
 	{
+		lightMat[0],
+		{ lightMat[1][0], lightMat[2][0], lightMat[3][0] },
+		lightMat[1][2], lightMat[2][2], lightMat[3][2]
+	};
+
 	vec3 lightDir = normalize(light.position - fs_in.FragPos);
 
 	float distance = length(light.position - fs_in.FragPos);
@@ -186,8 +212,17 @@ vec3 calculatePointLight(PointLight light)
 	return calculateBlinnPhong(lightDir, light.color) * attenuation;
 }
 
-vec3 calculateSpotLight(SpotLight light)
+vec3 calculateSpotLight(mat4 lightMat)
 {
+	SpotLight light =
+	{
+		lightMat[0],
+		{ lightMat[1][0], lightMat[2][0], lightMat[3][0] },
+		{ lightMat[1][1], lightMat[2][1], lightMat[3][1] },
+		lightMat[1][2], lightMat[2][2], lightMat[3][2],
+		lightMat[1][3], lightMat[2][3]
+	};
+
 	vec3 lightDir = normalize(light.position - fs_in.FragPos);
 	vec3 spotDir = normalize(-light.direction);
 
