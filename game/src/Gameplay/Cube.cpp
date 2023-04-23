@@ -5,24 +5,24 @@
 #include "LowRenderer/Mesh.h"
 
 using namespace LibMath;
-using namespace LibGL;
 using namespace LibGL::Rendering;
+using namespace LibGL;
 
 namespace PFA::Gameplay
 {
-    Cube::Cube(Entity& owner) : Component(owner)
-    {
-        ASSERT(typeid(owner) == typeid(Mesh) || dynamic_cast<Mesh*>(&owner) != nullptr);
-    }
+	Cube::Cube(Entity& owner) : Component(owner)
+	{
+		ASSERT(typeid(owner) == typeid(Mesh) || dynamic_cast<Mesh*>(&owner) != nullptr);
+	}
 
-    void Cube::swapColors(Color& otherColor) const
-    {
-        Entity& owner = getOwner();
-        ASSERT(typeid(owner) == typeid(Mesh) || dynamic_cast<Mesh*>(&owner) != nullptr);
+	void Cube::swapColors(Color& otherColor) const
+	{
+		Entity& owner = getOwner();
+		ASSERT(typeid(owner) == typeid(Mesh) || dynamic_cast<Mesh*>(&owner) != nullptr);
 
-        Mesh& ownerMesh = dynamic_cast<Mesh&>(owner);
-        const Color tmp = ownerMesh.getMaterial().getTint();
-        ownerMesh.getMaterial().setTint(otherColor);
-        otherColor = tmp;
-    }
+		Mesh& ownerMesh = dynamic_cast<Mesh&>(owner);
+		const Color tmp = ownerMesh.getMaterial().getTint();
+		ownerMesh.getMaterial().setTint(otherColor);
+		otherColor = tmp;
+	}
 }

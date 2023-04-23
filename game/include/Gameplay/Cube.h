@@ -9,12 +9,12 @@ namespace LibGL::Rendering
 
 namespace PFA::Gameplay
 {
-    class Cube final : public LibGL::Component
-    {
-    public:
-        explicit Cube(LibGL::Entity& owner);
+	class Cube final : public LibGL::Component
+	{
+	public:
+		explicit Cube(LibGL::Entity& owner);
 
-        void swapColors(LibGL::Rendering::Color& otherColor) const;
-    };
+		void swapColors(LibGL::Rendering::Color& otherColor) const;
+	};
 }
 #endif // CUBE_H

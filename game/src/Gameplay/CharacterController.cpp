@@ -9,6 +9,7 @@
 #include "CapsuleCollider.h"
 #include "Rigidbody.h"
 #include "Raycast.h"
+#include "Core/AudioManager.h"
 
 #define MAX_GROUND_DISTANCE .1f // The maximum distance from the ground at which the player is considered to be touching it
 #define SPRINT_MULTIPLIER 1.5f
@@ -20,6 +21,7 @@ using namespace LibGL::Utility;
 using namespace LibGL::Physics;
 using namespace LibGL::Application;
 using namespace LibGL::Rendering;
+using namespace PFA::Core;
 
 namespace PFA::Gameplay
 {
@@ -39,6 +41,7 @@ namespace PFA::Gameplay
 
 		handleKeyboard();
 		handleMouse();
+		updateAudioListener();
 	}
 
 	void CharacterController::handleKeyboard() const
@@ -114,10 +117,24 @@ namespace PFA::Gameplay
 		camera.setRotation(camRotation);
 	}
 
+	void CharacterController::updateAudioListener() const
+	{
+		auto& soundEngine = LGL_SERVICE(AudioManager).getSoundEngine();
+		const auto transform = getOwner().getGlobalTransform();
+		const auto pos = transform.getPosition();
+		const auto fwd = transform.forward();
+
+		soundEngine.setListenerPosition(
+			{ pos.m_x, pos.m_y, pos.m_z },
+			{ fwd.m_x, fwd.m_y, fwd.m_z }
+		);
+	}
+
 	void CharacterController::jump() const
 	{
 		const Vector3 gravityDir = g_gravity.normalized();
-		if (!raycast(getOwner().getGlobalTransform().getPosition() + m_groundCheckPos,
+		const Vector3 pos = getOwner().getGlobalTransform().getPosition();
+		if (!raycast(pos + m_groundCheckPos,
 			gravityDir, MAX_GROUND_DISTANCE))
 			return;
 
@@ -125,5 +142,8 @@ namespace PFA::Gameplay
 		ASSERT(rb != nullptr);
 
 		rb->addForce(m_jumpForce * -gravityDir, EForceMode::IMPULSE);
+
+		auto& soundEngine = LGL_SERVICE(AudioManager).getSoundEngine();
+		soundEngine.play3D(JUMP_SOUND, { pos.m_x, pos.m_y, pos.m_z });
 	}
 }

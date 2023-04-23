@@ -5,17 +5,19 @@
 
 namespace PFA::Gameplay
 {
-    class Telephone final : public LibGL::Component
-    {
-    public:
-	    explicit Telephone(LibGL::Entity& owner,
-            LibGL::Rendering::Color color = LibGL::Rendering::Color::white);
+	class Telephone final : public LibGL::Component
+	{
+	public:
+		explicit Telephone(LibGL::Entity& owner,
+			LibGL::Rendering::Color color = LibGL::Rendering::Color::white);
 
-    private:
-        LibGL::Rendering::Color m_color;
+	private:
+		inline static const char* SWAP_SOUND = "assets/sounds/swap.wav";
 
-	    void updateColor() const;
-        void update() override;
-    };
+		LibGL::Rendering::Color m_color;
+
+		void updateColor() const;
+		void update() override;
+	};
 }
 #endif // TELEPHONE_H

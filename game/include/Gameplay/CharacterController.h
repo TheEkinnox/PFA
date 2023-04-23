@@ -21,20 +21,27 @@ namespace PFA::Gameplay
 		void update() override;
 
 	private:
+		inline static const char* JUMP_SOUND = "assets/sounds/jump.wav";
+
 		LibMath::Vector3	m_groundCheckPos;
 		float				m_moveSpeed;
 		float				m_rotationSpeed;
 		float				m_jumpForce;
 
 		/**
-		 * \brief Handle keyboard inputs
+		 * \brief Handles keyboard inputs
 		 */
 		void handleKeyboard() const;
 
 		/**
-		 * \brief Handle mouse movement and inputs
+		 * \brief Handles mouse movement and inputs
 		 */
 		void handleMouse() const;
+
+		/**
+		 * \brief Updates the audio listener's data
+		 */
+		void updateAudioListener() const;
 
 		/**
 		 * \brief Makes the player jump
