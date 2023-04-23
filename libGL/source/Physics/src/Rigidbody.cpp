@@ -73,8 +73,14 @@ namespace LibGL::Physics
 
 	void Rigidbody::simulate()
 	{
-		if (!isActive() || m_isKinematic)
+		if (!isActive())
 			return;
+
+		if (m_isKinematic)
+		{
+			move();
+			return;
+		}
 
 		if (m_useGravity)
 			addForce(g_gravity, EForceMode::ACCELERATION);
@@ -140,11 +146,15 @@ namespace LibGL::Physics
 
 	void Rigidbody::move()
 	{
-		if (!isActive() || isSleeping() || m_isKinematic)
+		if (!isActive() || isSleeping())
 			return;
 
-		const auto ownerColliders = getOwner().getComponents<ICollider>();
 		const float deltaTime = LGL_SERVICE(Timer).getDeltaTime();
+
+		if (m_isKinematic)
+			getOwner().translate(m_velocity * deltaTime);
+
+		const auto ownerColliders = getOwner().getComponents<ICollider>();
 
 		if (ownerColliders.empty())
 		{
