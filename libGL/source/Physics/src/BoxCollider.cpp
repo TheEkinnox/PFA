@@ -87,22 +87,52 @@ namespace LibGL::Physics
 		if (!ICollider::check(other))
 			return false;
 
-		const auto [center, size, radius] = getBounds();
-		const auto [otherCenter, otherSize, otherRadius] = other.getBounds();
+		// Compute the closest point on the box to the capsule
+		Vector3 closestPoint = Vector3::zero();
 
-		const Vector3 min = center - size / 2.f;
-		const Vector3 max = center + size / 2.f;
-		const Vector3 otherMin = otherCenter - otherSize / 2.f;
-		const Vector3 otherMax = otherCenter + otherSize / 2.f;
+		const Vector3 halfSize = getBounds().m_boxSize * 0.5f;
+		const Vector3 boxCenter = getBounds().m_center;
 
-		// Check AABB to avoid unnecessary capsule collision computation
-		if (min.m_x > otherMax.m_x || max.m_x < otherMin.m_x ||
-			min.m_y > otherMax.m_y || max.m_y < otherMin.m_y ||
-			min.m_z > otherMax.m_z || max.m_z < otherMin.m_z)
+		const Vector3 capsuleCenter = other.getBounds().m_center;
+		const float capsuleRadius = other.getRadius();
+		Vector3 capsuleUp = other.getUpDirection();
+		const float capsuleHeight = other.getHeight();
+
+		// First check if the capsule is above or below the box
+		const float boxMinY = boxCenter.m_y - halfSize.m_y;
+		const float boxMaxY = boxCenter.m_y + halfSize.m_y;
+		const float capsuleMinY = capsuleCenter.m_y - capsuleHeight * 0.5f;
+		const float capsuleMaxY = capsuleCenter.m_y + capsuleHeight * 0.5f;
+
+		if (capsuleMinY > boxMaxY || capsuleMaxY < boxMinY)
+		{
+			// Capsule is completely above or below the box, so there's no collision
 			return false;
+		}
 
-		// TODO: Box-Capsule collisions
-		return true;
+		// Check if the capsule is intersecting the box in the x-z plane
+		Vector3 capsuleToBox = boxCenter - capsuleCenter;
+		capsuleToBox.m_y = 0.f;
+		capsuleToBox = capsuleToBox.normalized();
+
+		Vector3 boxExtents = halfSize - Vector3(capsuleRadius, 0.f, capsuleRadius);
+		boxExtents = max(boxExtents, Vector3::zero());
+
+		closestPoint = boxCenter + capsuleToBox * (boxExtents.m_x * (capsuleToBox.m_x > 0 ? 1.f : -1.f));
+		closestPoint = closestPoint + Vector3::up() * capsuleHeight * 0.5f * (capsuleToBox.m_y > 0 ? 1.f : -1.f);
+
+		if (closestPoint.m_y < boxMinY)
+		{
+			closestPoint.m_y = boxMinY;
+		}
+		else if (closestPoint.m_y > boxMaxY)
+		{
+			closestPoint.m_y = boxMaxY;
+		}
+
+		// Check if the closest point on the box is inside the capsule
+		const float dist = (closestPoint - capsuleCenter).magnitudeSquared();
+		return dist < capsuleRadius * capsuleRadius;
 	}
 
 	Vector3 BoxCollider::getClosestPoint(const Vector3& point) const
