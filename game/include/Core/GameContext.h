@@ -30,6 +30,7 @@ namespace PFA::Core
 		std::unique_ptr<LibGL::EventManager>				m_eventManager;
 		std::unique_ptr<Core::AudioManager>					m_audioManager;
 		std::unique_ptr<Gameplay::IGameScene>				m_scene;
+		bool												m_isPaused = false;
 
 		/**
 		 * \brief Binds the game's exit function

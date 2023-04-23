@@ -35,6 +35,10 @@ namespace PFA::Core
 	{
 		Debug::Log::openFile("console.log");
 
+		m_renderer->setCapability(ERenderingCapability::BLEND, true);
+		m_renderer->setCapability(ERenderingCapability::CULL_FACE, true);
+		m_renderer->setCapability(ERenderingCapability::DEPTH_TEST, true);
+
 		ServiceLocator::provide<Renderer>(*m_renderer);
 		ServiceLocator::provide<InputManager>(*m_inputManager);
 		ServiceLocator::provide<ResourceManager>(*m_resourcesManager);
@@ -61,6 +65,13 @@ namespace PFA::Core
 		m_inputManager->updateMouse();
 		m_renderer->clear(Camera::getCurrent());
 
+		if (m_inputManager->isKeyPressed(EKey::KEY_P))
+		{
+			m_isPaused = !m_isPaused;
+			m_isPaused ? m_window->showCursor() : m_window->disableCursor();
+			m_timer->setTimeScale(m_isPaused ? 0.f : 1.f);
+		}
+
 		m_scene->update();
 
 		m_audioManager->getSoundEngine().update();
@@ -82,6 +93,9 @@ namespace PFA::Core
 	{
 		const auto restartFunc = [&]
 		{
+			if (m_scene)
+				m_scene->clear();
+
 			loadScene<Level1>();
 		};
 

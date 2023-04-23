@@ -1,6 +1,7 @@
 #include "Core/GameApp.h"
 #include "Core/EventDefs.h"
 #include "Core/GameContext.h"
+#include "Debug/Log.h"
 
 #include "Eventing/EventManager.h"
 #include "Utility/ServiceLocator.h"
@@ -17,6 +18,7 @@ namespace PFA::Core
 
 	void GameApp::onStart()
 	{
+		DEBUG_LOG("Game started\n");
 	}
 
 	void GameApp::onUpdate()
@@ -34,5 +36,6 @@ namespace PFA::Core
 
 	void GameApp::onStop()
 	{
+		DEBUG_LOG("Game stopped\n");
 	}
 }
