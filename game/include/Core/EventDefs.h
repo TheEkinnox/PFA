@@ -18,4 +18,9 @@ namespace PFA::Events
 	 * \brief An event indicating the phone's color changed
 	 */
 	class ColorChangedEvent final : public LibGL::Event<LibGL::Rendering::Color> {};
+
+	/**
+	 * \brief An event indicating the current level was completed
+	 */
+	class LevelCompleteEvent final : public LibGL::Event<> {};
 }
