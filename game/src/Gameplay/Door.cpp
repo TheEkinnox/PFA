@@ -3,7 +3,6 @@
 #include "ICollider.h"
 #include "Core/EventDefs.h"
 #include "Debug/Assertion.h"
-#include "Debug/Log.h"
 #include "Eventing/EventManager.h"
 #include "LowRenderer/Mesh.h"
 #include "Utility/ServiceLocator.h"
@@ -25,14 +24,12 @@ namespace PFA::Gameplay
 		Component(other), m_openMat(other.m_openMat),
 		m_closedMat(other.m_closedMat), m_uvOffset(other.m_uvOffset)
 	{
-		DEBUG_LOG("A");
 	}
 
 	Door::Door(Door&& other) noexcept :
 		Component(std::move(other)), m_openMat(other.m_openMat),
 		m_closedMat(other.m_closedMat), m_uvOffset(other.m_uvOffset)
 	{
-		DEBUG_LOG("A");
 	}
 
 	Door::~Door()

@@ -11,7 +11,7 @@ namespace PFA::Gameplay
 		LibGL::Rendering::Material m_openMat;
 		LibGL::Rendering::Material m_closedMat;
 
-		explicit Door(LibGL::Entity& owner, const LibGL::Rendering::Material& openMat,
+		Door(LibGL::Entity& owner, const LibGL::Rendering::Material& openMat,
 			const LibGL::Rendering::Material& closedMat);
 
 		Door(const Door& other);
