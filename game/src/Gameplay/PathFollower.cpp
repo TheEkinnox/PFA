@@ -63,7 +63,6 @@ void PathFollower::update()
 	if (!isActive())
 		return;
 
-	const Vec3& current = currentPoint();
 	const Vec3& next = nextPoint();
 
 	Vec3 toNext = next - getOwner().getPosition();
