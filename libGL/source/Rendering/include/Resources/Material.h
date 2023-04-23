@@ -15,9 +15,9 @@ namespace LibGL::Rendering
 	public:
 		struct Maps
 		{
-			const Resources::Texture* m_diffuse;
-			const Resources::Texture* m_specular;
-			const Resources::Texture* m_normal;
+			const Resources::Texture* m_diffuse = nullptr;
+			const Resources::Texture* m_specular = nullptr;
+			const Resources::Texture* m_normal = nullptr;
 		};
 
 		struct ColorData

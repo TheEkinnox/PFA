@@ -28,20 +28,17 @@ namespace LibGL::Rendering
 		/**
 		 * \brief Unbinds the ssbo from the current binding point
 		 */
-		void unbind();
+		void unbind() const;
 
 		/**
 		 * \brief Sends the data block to the buffer
 		 * \param data The data block to send
-		 * \param count The number of elements in the block
+		 * \param blockSize The number of elements in the block
 		 */
-		template<typename T>
-		void sendBlocks(T* data, size_t count) const;
+		void sendBlocks(const void* data, size_t blockSize) const;
 
 	private:
 		uint32_t				m_bindingPoint = 0;
-
-		void sendBlocks(const void* data, size_t blockSize) const;
 	};
 }
 

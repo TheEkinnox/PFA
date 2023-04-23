@@ -28,10 +28,9 @@ namespace LibGL::Rendering
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, m_bindingPoint, m_bufferIndex);
 	}
 
-	void ShaderStorageBuffer::unbind()
+	void ShaderStorageBuffer::unbind() const
 	{
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, m_bindingPoint, 0);
-		m_bindingPoint = 0;
 	}
 
 	void ShaderStorageBuffer::sendBlocks(const void* data, const size_t blockSize) const
