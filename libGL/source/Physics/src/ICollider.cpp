@@ -68,7 +68,11 @@ namespace LibGL::Physics
 	{
 		const Transform transform = getOwner().getGlobalTransform();
 		const Vector3 worldCenter = (transform.getMatrix() * Vector4(m_bounds.m_center, 1.f)).xyz();
-		const Vector3 worldSize = (transform.getMatrix() * Vector4(m_bounds.m_boxSize, 0)).xyz();
+		Vector3 worldSize = (transform.getMatrix() * Vector4(m_bounds.m_boxSize, 0)).xyz();
+
+		worldSize.m_x = LibMath::abs(worldSize.m_x);
+		worldSize.m_y = LibMath::abs(worldSize.m_y);
+		worldSize.m_z = LibMath::abs(worldSize.m_z);
 
 		const Vector3 scale = transform.getScale();
 		const float radiusScale = max(max(scale.m_x, scale.m_y), scale.m_z);
