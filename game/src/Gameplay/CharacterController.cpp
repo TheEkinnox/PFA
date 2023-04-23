@@ -11,6 +11,7 @@
 #include "Raycast.h"
 
 #define MAX_GROUND_DISTANCE .1f // The maximum distance from the ground at which the player is considered to be touching it
+#define SPRINT_MULTIPLIER 1.5f
 
 using namespace LibMath;
 using namespace LibMath::Literal;
@@ -22,7 +23,7 @@ using namespace LibGL::Rendering;
 
 namespace PFA::Gameplay
 {
-	CharacterController::CharacterController(Entity& owner, Vector3 groundCheckPos,
+	CharacterController::CharacterController(Entity& owner, const Vector3 groundCheckPos,
 		const float moveSpeed, const float rotationSpeed, const float jumpForce) :
 		Component(owner), m_groundCheckPos(groundCheckPos),
 		m_moveSpeed(moveSpeed), m_rotationSpeed(rotationSpeed),
@@ -69,15 +70,13 @@ namespace PFA::Gameplay
 
 		if (!floatEquals(m_moveSpeed, 0.f) && moveDir != Vector3::zero())
 		{
-			const Vector3 gravityMask
-			{
-				LibMath::abs(g_gravity.m_x) > 0.f ? 1.f : 0.f,
-				LibMath::abs(g_gravity.m_y) > 0.f ? 1.f : 0.f,
-				LibMath::abs(g_gravity.m_z) > 0.f ? 1.f : 0.f
-			};
+			float speedScale = 1.f;
 
-			moveDir -= moveDir * gravityMask;
-			targetVelocity = moveDir * (m_moveSpeed / moveDir.magnitude());
+			if (inputManager.isKeyDown(EKey::KEY_LEFT_SHIFT) ||
+				inputManager.isKeyDown(EKey::KEY_RIGHT_SHIFT))
+				speedScale = SPRINT_MULTIPLIER;
+
+			targetVelocity = moveDir * (m_moveSpeed * speedScale / moveDir.magnitude());
 		}
 
 		targetVelocity.m_y += rb->m_velocity.m_y;
