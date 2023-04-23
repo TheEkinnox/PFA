@@ -2,42 +2,49 @@
 
 using namespace LibMath;
 using namespace LibGL::Resources;
-using namespace LibGL::Physics;
 
 namespace LibGL::Rendering
 {
 	Camera* Camera::m_current = nullptr;
 
 	Camera::Camera()
-		: SceneNode(),
+		: Entity(),
 		m_projectionMatrix(Matrix4::orthographicProjection(-1, 1, -1, 1, -1, 1))
 	{
 		updateMatrices();
 	}
 
-	Camera::Camera(SceneNode* parent, const Transform& transform, Matrix4 projectionMatrix)
-		: SceneNode(parent, transform), m_projectionMatrix(std::move(projectionMatrix))
+	Camera::Camera(Node* parent, const Transform& transform, Matrix4 projectionMatrix)
+		: Entity(parent, transform), m_projectionMatrix(std::move(projectionMatrix))
 	{
 		updateMatrices();
 	}
 
 	Camera::Camera(const Camera& other)
-		: SceneNode(other), m_projectionMatrix(other.m_projectionMatrix)
+		: Entity(other), m_projectionMatrix(other.m_projectionMatrix)
 	{
 		updateMatrices();
 	}
 
 	Camera::Camera(Camera&& other) noexcept
-		: SceneNode(std::move(other)),
+		: Entity(std::move(other)),
 		m_projectionMatrix(std::move(other.m_projectionMatrix))
 	{
 		updateMatrices();
+	}
+
+	Camera::~Camera()
+	{
+		if (this == m_current)
+			m_current = nullptr;
 	}
 
 	Camera& Camera::operator=(const Camera& other)
 	{
 		if (&other == this)
 			return *this;
+
+		Entity::operator=(other);
 
 		m_projectionMatrix = other.m_projectionMatrix;
 
@@ -51,6 +58,8 @@ namespace LibGL::Rendering
 		if (&other == this)
 			return *this;
 
+		Entity::operator=(other);
+
 		m_projectionMatrix = std::move(other.m_projectionMatrix);
 
 		updateMatrices();
@@ -58,12 +67,12 @@ namespace LibGL::Rendering
 		return *this;
 	}
 
-	LibMath::Matrix4 Camera::getViewMatrix() const
+	Matrix4 Camera::getViewMatrix() const
 	{
 		return m_viewMatrix;
 	}
 
-	LibMath::Matrix4 Camera::getViewProjectionMatrix() const
+	Matrix4 Camera::getViewProjectionMatrix() const
 	{
 		return m_viewProjectionMatrix;
 	}
@@ -77,9 +86,61 @@ namespace LibGL::Rendering
 		return *this;
 	}
 
+	Camera& Camera::setClearColor(const Color& color)
+	{
+		m_clearColor = color;
+		return *this;
+	}
+
+	Camera& Camera::setClearColor(const float r, const float g, const float b, const float a)
+	{
+		setClearColor({ r, g, b, a });
+		return *this;
+	}
+
+	Color Camera::getClearColor() const
+	{
+		return m_clearColor;
+	}
+
+	Camera& Camera::setClearColorBuffer(const bool enable)
+	{
+		m_clearColorBuffer = enable;
+		return *this;
+	}
+
+	bool Camera::getClearColorBuffer() const
+	{
+		return m_clearColorBuffer;
+	}
+
+	Camera& Camera::setClearDepthBuffer(const bool enable)
+	{
+		m_clearDepthBuffer = enable;
+		return *this;
+	}
+
+	bool Camera::getClearDepthBuffer() const
+	{
+		return m_clearDepthBuffer;
+	}
+
+	Camera& Camera::setClearStencilBuffer(const bool enable)
+	{
+		m_clearStencilBuffer = enable;
+		return *this;
+	}
+
+	bool Camera::getClearStencilBuffer() const
+	{
+		return m_clearStencilBuffer;
+	}
+
 	Camera& Camera::getCurrent()
 	{
-		return *m_current;
+		static Camera defaultCam;
+
+		return m_current ? *m_current : defaultCam;
 	}
 
 	void Camera::setCurrent(Camera& cam)
@@ -89,7 +150,7 @@ namespace LibGL::Rendering
 
 	void Camera::onChange()
 	{
-		SceneNode::onChange();
+		Entity::onChange();
 		updateMatrices();
 	}
 

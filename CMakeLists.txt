@@ -6,11 +6,14 @@ project(ProjetFinAnnee)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
+set(ASSETS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/assets)
+
 add_subdirectory(libmaths)
 
 set(LIBGL_BUILD_DEMO OFF)
 add_subdirectory(libGL)
 
+add_subdirectory(external)
 add_subdirectory(game)
 
 if (MSVC)

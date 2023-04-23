@@ -62,17 +62,25 @@ namespace LibGL::Utility
 		 */
 		void setTimeScale(float timeScale);
 
+		/**
+		 * \brief Gets the number of time the "update" function has been called
+		 * \return The elapsed number of frames since the timer's creation
+		 */
+		uint64_t getFrameCount() const;
+
 	private:
 		using clock = std::chrono::steady_clock;
 
 		clock::time_point	m_currentTime = clock::now();
 		clock::time_point	m_lastUpdate = clock::now();
 
-		float	m_time = 0;
-		float	m_unscaledTime = 0;
-		float	m_deltaTime = 0;
-		float	m_timeScale = 1;
+		uint64_t			m_frameCount = 0;
 
-		bool	m_isFirstUpdate = true;
+		float				m_time = 0;
+		float				m_unscaledTime = 0;
+		float				m_deltaTime = 0;
+		float				m_timeScale = 1;
+
+		bool				m_isFirstUpdate = true;
 	};
 }

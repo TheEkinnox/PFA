@@ -1,24 +1,32 @@
 #pragma once
-#include "Vector/Vector4.h"
+#include "Core/Color.h"
+#include "Matrix/Matrix4.h"
+#include "Vector/Vector3.h"
 
-namespace LibGL
+namespace LibGL::Resources
 {
-	namespace Resources
-	{
-		class Shader;
-	}
+	class Shader;
 }
 
 namespace LibGL::Rendering
 {
+	enum class ELightType
+	{
+		AMBIENT = 0,
+		DIRECTIONAL,
+		POINT,
+		SPOT
+	};
+
 	struct Light
 	{
-		LibMath::Vector4	m_ambient;
-		LibMath::Vector4	m_diffuse;
-		LibMath::Vector4	m_specular;
+		/**
+		 * \brief The light's color (alpha is intensity)
+		 */
+		Color	m_color	= Color::white;
 
 		Light() = default;
-		Light(const LibMath::Vector4& ambient, const LibMath::Vector4& diffuse, const LibMath::Vector4& specular);
+		Light(const Color& color);
 		Light(const Light&) = default;
 		Light(Light&&) = default;
 		virtual ~Light() = default;
@@ -34,9 +42,16 @@ namespace LibGL::Rendering
 		 * \param shader The shader for which the uniform should be set
 		 */
 		virtual void setupUniform(const std::string& uniformName, const Resources::Shader& shader) const;
+
+		/**
+		 * \brief Creates a matrix storing the light's color in the first column,\n
+		 and the light type in the fourth column's fourth row
+		 * \return A matrix containing the light's data
+		 */
+		virtual LibMath::Matrix4 getMatrix() const;
 	};
 
-	struct DirectionalLight : Light
+	struct DirectionalLight final : Light
 	{
 		LibMath::Vector3	m_direction;
 
@@ -57,6 +72,14 @@ namespace LibGL::Rendering
 		 * \param shader The shader for which the uniform should be set
 		 */
 		void setupUniform(const std::string& uniformName, const Resources::Shader& shader) const override;
+
+		/**
+		 * \brief Creates a matrix storing the light's color in the first column,\n
+		 the direction in the remaining space of the first row,\n
+		 and the light type in the fourth column's fourth row
+		 * \return A matrix containing the light's data
+		 */
+		LibMath::Matrix4 getMatrix() const override;
 	};
 
 	struct AttenuationData
@@ -64,9 +87,13 @@ namespace LibGL::Rendering
 		float	m_constant = 1;
 		float	m_linear = 0;
 		float	m_quadratic = 0;
+
+		AttenuationData() = default;
+		explicit AttenuationData(float range);
+		AttenuationData(float constant, float linear, float quadratic);
 	};
 
-	struct PointLight : Light
+	struct PointLight final : Light
 	{
 		LibMath::Vector3	m_position;
 		AttenuationData		m_attenuationData;
@@ -86,26 +113,39 @@ namespace LibGL::Rendering
 		 * \brief Sets up the uniform variables for the current light
 		 * in the given shader
 		 * \param uniformName The name of the light's uniform variable
-		 / in the given shader
+		 * in the given shader
 		 * \param shader The shader for which the uniform should be set
 		 */
 		void setupUniform(const std::string& uniformName, const Resources::Shader& shader) const override;
+
+		/**
+		 * \brief Creates a matrix storing the light's color in the first column,\n
+		 the position in the remaining space of the second row,\n
+		 the attenuation data in the remaining space of the third row,\n
+		 and the light type in the fourth column's fourth row
+		 * \return A matrix containing the light's data
+		 */
+		LibMath::Matrix4 getMatrix() const override;
 	};
 
-	struct SpotLight : Light
+	struct Cutoff
+	{
+		float m_inner;
+		float m_outer;
+	};
+
+	struct SpotLight final : Light
 	{
 		LibMath::Vector3	m_position;
 		LibMath::Vector3	m_direction;
 
 		AttenuationData		m_attenuationData;
-
-		float				m_cutOff = 0;
-		float				m_outerCutoff = 0;
+		Cutoff				m_cutoff { 0, 0 };
 
 		SpotLight() = default;
 		SpotLight(const Light& light, const LibMath::Vector3& position,
 			const LibMath::Vector3& direction, const AttenuationData& attenuationData,
-			float cutOff, float outerCutOff);
+			const Cutoff& cutoff);
 
 		SpotLight(const SpotLight&) = default;
 		SpotLight(SpotLight&&) = default;
@@ -122,5 +162,16 @@ namespace LibGL::Rendering
 		 * \param shader The shader for which the uniform should be set
 		 */
 		void setupUniform(const std::string& uniformName, const Resources::Shader& shader) const override;
+
+		/**
+		 * \brief Creates a matrix storing the light's color in the first column,\n
+		 the direction in the remaining space of the first row,\n
+		 the position in the remaining space of the second row,\n
+		 the attenuation data in the remaining space of the third row,\n
+		 the cutoff data in the remaining space of the fourth row,\n
+		 and the light type in the fourth column's fourth row
+		 * \return A matrix containing the light's data
+		 */
+		LibMath::Matrix4 getMatrix() const override;
 	};
 }

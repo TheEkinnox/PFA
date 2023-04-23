@@ -12,28 +12,25 @@ namespace LibGL::Utility
 		// return the format string as is to avoid unnecessary allocation
 		if constexpr (sizeof...(Args) == 0)
 		{
-			return std::string(format);
+			return format;
 		}
 		else
 		{
 			// get the formatted text's size
-			const int intSize = std::snprintf(nullptr, 0, format, args...) + 1;
+			const int bufferSize = std::snprintf(nullptr, 0, format, args...) + 1;
 
-			if (intSize <= 0)
+			if (bufferSize <= 0)
 				throw std::runtime_error("Unable to print to log - formatting failed.");
 
 			// Create a buffer of the computed size
-			const size_t bufferSize = static_cast<size_t>(intSize);
-			char* const buffer = new char[bufferSize];
+			std::vector<char> buffer;
+			buffer.reserve(bufferSize);
 
 			// Write the formatted string in the buffer
-			std::snprintf(buffer, bufferSize, format, args...);
+			std::snprintf(buffer.data(), bufferSize, format, args...);
 
 			// Copy the buffer data into an std::string
-			std::string message(buffer, buffer + bufferSize - 1);
-
-			// Free the buffer
-			delete[] buffer;
+			std::string message(buffer.data(), buffer.data() + bufferSize - 1);
 
 			return message;
 		}

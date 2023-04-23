@@ -1,7 +1,5 @@
 #include "LowRenderer/Mesh.h"
 
-#include <glad/glad.h>
-
 #include "LowRenderer/Camera.h"
 #include "Resources/Model.h"
 #include "Resources/Shader.h"
@@ -12,9 +10,14 @@ using namespace LibGL::Resources;
 
 namespace LibGL::Rendering
 {
-	Mesh::Mesh(SceneNode* parent, const Model& model, const Material& material)
-		: SceneNode(parent, Transform()), m_model(&model), m_material(material)
+	Mesh::Mesh(Node* parent, const Model& model, const Material& material)
+		: Entity(parent, Transform()), m_model(&model), m_material(material)
 	{
+	}
+
+	const Model* Mesh::getModel() const
+	{
+		return m_model;
 	}
 
 	void Mesh::setModel(const Model& model)
@@ -22,9 +25,14 @@ namespace LibGL::Rendering
 		m_model = &model;
 	}
 
-	void Mesh::setMaterial(const Material& material)
+	Material Mesh::getMaterial() const
 	{
-		m_material = material;
+		return m_material;
+	}
+
+	Material& Mesh::getMaterial()
+	{
+		return m_material;
 	}
 
 	void Mesh::draw() const
@@ -32,20 +40,12 @@ namespace LibGL::Rendering
 		m_material.use();
 
 		const Shader& shader = m_material.getShader();
-
-		const GLint mvpMatUniformLoc = shader.getUniformLocation("mvp");
-		const GLint modelMatUniformLoc = shader.getUniformLocation("modelMat");
-		const GLint normalMatUniformLoc = shader.getUniformLocation("normalMat");
-
 		const Matrix4 viewProjMat = Camera::getCurrent().getViewProjectionMatrix();
-
 		const Matrix4 modelMat = getGlobalTransform().getMatrix();
-		const Matrix4 normalMat = modelMat.inverse().transposed();
-		const Matrix4 mvpMat = viewProjMat * modelMat;
 
-		glUniformMatrix4fv(mvpMatUniformLoc, 1, GL_TRUE, mvpMat.getArray());
-		glUniformMatrix4fv(modelMatUniformLoc, 1, GL_TRUE, modelMat.getArray());
-		glUniformMatrix4fv(normalMatUniformLoc, 1, GL_TRUE, normalMat.getArray());
+		shader.setUniformMat4("u_mvp", viewProjMat * modelMat);
+		shader.setUniformMat4("u_modelMat", modelMat);
+		shader.setUniformMat4("u_normalMat", modelMat.inverse().transposed());
 
 		m_model->draw();
 
@@ -57,6 +57,6 @@ namespace LibGL::Rendering
 	{
 		draw();
 
-		SceneNode::update();
+		Entity::update();
 	}
 }

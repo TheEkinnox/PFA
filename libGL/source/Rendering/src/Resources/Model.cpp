@@ -10,92 +10,10 @@
 #include "Utility/utility.h"
 
 using namespace LibMath;
+using namespace LibGL::Rendering;
 
 namespace LibGL::Resources
 {
-	Model::VertexBuffer::VertexBuffer(const Vertex* vertices, const intptr_t verticesCount)
-	{
-		glGenBuffers(1, &m_bufferIndex);
-		glBindBuffer(GL_ARRAY_BUFFER, m_bufferIndex);
-		glBufferData(GL_ARRAY_BUFFER, verticesCount * static_cast<GLsizeiptr>(sizeof(Vertex)),
-			vertices, GL_STATIC_DRAW);
-	}
-
-	Model::VertexBuffer::VertexBuffer(const std::vector<Vertex>& vertices)
-	{
-		const Vertex* verticesArray = vertices.data();
-
-		glGenBuffers(1, &m_bufferIndex);
-		glBindBuffer(GL_ARRAY_BUFFER, m_bufferIndex);
-		glBufferData(GL_ARRAY_BUFFER,
-			static_cast<GLsizeiptr>(vertices.size()) * static_cast<GLsizeiptr>(sizeof(Vertex)),
-			verticesArray, GL_STATIC_DRAW);
-	}
-
-	Model::IndexBuffer::IndexBuffer(const uint32_t* indices, const intptr_t indexCount)
-	{
-		glGenBuffers(1, &m_bufferIndex);
-		glBindBuffer(GL_ARRAY_BUFFER, m_bufferIndex);
-		glBufferData(GL_ARRAY_BUFFER, indexCount * static_cast<GLsizeiptr>(sizeof(Vertex)),
-			indices, GL_STATIC_DRAW);
-	}
-
-	Model::IndexBuffer::IndexBuffer(const std::vector<uint32_t>& indices)
-	{
-		const uint32_t* idsArray = indices.data();
-
-		glGenBuffers(1, &m_bufferIndex);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufferIndex);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			static_cast<GLsizeiptr>(indices.size()) * static_cast<GLsizeiptr>(sizeof(uint32_t)),
-			idsArray, GL_STATIC_DRAW);
-	}
-
-	Model::Buffer::Buffer(Buffer&& other) noexcept
-		: m_bufferIndex(other.m_bufferIndex)
-	{
-		other.m_bufferIndex = 0;
-	}
-
-	Model::Buffer::~Buffer()
-	{
-		glDeleteBuffers(1, &m_bufferIndex);
-	}
-
-	Model::Buffer& Model::Buffer::operator=(Buffer&& other) noexcept
-	{
-		if (&other == this)
-			return *this;
-
-		glDeleteBuffers(1, &m_bufferIndex);
-
-		m_bufferIndex = other.m_bufferIndex;
-
-		other.m_bufferIndex = 0;
-
-		return *this;
-	}
-
-	void Model::VertexBuffer::bind() const
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_bufferIndex);
-	}
-
-	void Model::VertexBuffer::unbind()
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
-
-	void Model::IndexBuffer::bind() const
-	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufferIndex);
-	}
-
-	void Model::IndexBuffer::unbind()
-	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
-
 	Model::VertexAttributes::VertexAttributes(const VertexBuffer& vbo, const IndexBuffer& ebo)
 	{
 		glGenVertexArrays(1, &m_vao);
@@ -245,13 +163,16 @@ namespace LibGL::Resources
 				line = line.substr(token.size());
 				const auto faceStrings = Utility::splitString(line, " ", true);
 
-				ASSERT(faceStrings.size() == 3);
+				ASSERT(faceStrings.size() == 3 || faceStrings.size() == 4);
 
-				for (const auto& faceStr : faceStrings)
+				size_t verticesCount = faceStrings.size();
+				const uint32_t* faceIndices = getFaceIndices(verticesCount);
+
+				for (size_t i = 0; i < verticesCount; i++)
 				{
-					size_t posIdx = 0, uvIdx = 0, normalIdx = 0;
+					size_t faceIdx = faceIndices[i], posIdx = 0, uvIdx = 0, normalIdx = 0;
 
-					const auto faceData = Utility::splitString(faceStr, "/", true);
+					const auto faceData = Utility::splitString(faceStrings[faceIdx], "/", true);
 
 					if (!faceData[0].empty())
 					{
@@ -286,7 +207,7 @@ namespace LibGL::Resources
 
 					uint32_t	vertexIdx;
 					bool		isDuplicate = false;
-					
+
 					//vertexIdx = static_cast<uint32_t>(m_vertices.size());
 					for (vertexIdx = 0; vertexIdx < m_vertices.size(); ++vertexIdx)
 					{
@@ -320,5 +241,33 @@ namespace LibGL::Resources
 
 		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_indices.size()),
 			GL_UNSIGNED_INT, nullptr);
+	}
+
+	const uint32_t* Model::getFaceIndices(size_t& vertexCount)
+	{
+		switch (vertexCount)
+		{
+		case 3:
+		{
+			static constexpr uint32_t triIndices[3]{ 0, 1, 2 };
+			return triIndices;
+		}
+		case 4:
+		{
+			vertexCount = 6;
+			static constexpr uint32_t quadIndices[6]
+			{
+				0, 1, 2,
+				0, 2, 3
+			};
+
+			return quadIndices;
+		}
+		default:
+		{
+			vertexCount = 0;
+			return nullptr;
+		}
+		}
 	}
 }

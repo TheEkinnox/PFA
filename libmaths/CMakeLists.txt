@@ -34,11 +34,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${HEADER_FILES} ${SOURCE_FIL
 #                             #
 ###############################
 
-if (BUILD_SHARED_LIBS)
-  add_library(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
-else()
-  add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
-endif()
+add_library(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
 include_directories(${PROJECT_INCLUDE_DIR})
 
