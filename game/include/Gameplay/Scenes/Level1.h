@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Core/Buffers/ShaderStorageBuffer.h"
 #include "Gameplay/Scenes/IGameScene.h"
-#include "LowRenderer/Light.h"
-#include "Resources/Shader.h"
 
-// TODO (NTH): use an ssbo for the lights
-#define NB_POINT_LIGHTS 8
+namespace LibGL::Rendering
+{
+	class Material;
+	struct Color;
+}
 
 namespace PFA::Gameplay
 {
@@ -21,21 +23,7 @@ namespace PFA::Gameplay
 		Level1& load() override;
 
 	private:
-		LibGL::Rendering::DirectionalLight	m_dirLight;
-		LibGL::Rendering::PointLight		m_pointLights[NB_POINT_LIGHTS];
-
-		/**
-		 * \brief Loads the shader with the given fileName
-		 * \param fileName The path of the lit shader to get
-		 * \return A pointer to the loaded lit shader on success, nullptr otherwise
-		 */
-		const LibGL::Resources::Shader* getLitShader(const std::string& fileName) const;
-
-		/**
-		 * \brief Update the lighting data for the shader with the given file name
-		 * \param fileName The path of the lit shader to update
-		 */
-		void updateLitShader(const std::string& fileName) const;
+		LibGL::Rendering::ShaderStorageBuffer	m_lightsSSBO;
 
 		/**
 		 * \brief Places the level's floor
@@ -43,9 +31,23 @@ namespace PFA::Gameplay
 		void placeFloor();
 
 		/**
+		 * \brief Adds a wall to the scene with the given transform
+		 * \param transform The wall's transform
+		 */
+		void addWall(const LibMath::Transform& transform);
+
+		/**
 		 * \brief Places the level's walls
 		 */
 		void placeWalls();
+
+		/**
+		 * \brief Adds a block to the scene with the given transform
+		 * \param transform The block's transform
+		 * \param color The block's color
+		 */
+		void addBlock(const LibMath::Transform& transform,
+			const LibGL::Rendering::Color& color);
 
 		/**
 		 * \brief Places the level's color blocks
@@ -53,9 +55,22 @@ namespace PFA::Gameplay
 		void placeBlocks();
 
 		/**
+		 * \brief Adds a door to the scene with the given transform
+		 * \param transform The door's transform
+		 * \param color The door's color
+		 */
+		void addDoor(const LibMath::Transform& transform,
+			const LibGL::Rendering::Color& color);
+
+		/**
 		 * \brief Places the level's doors
 		 */
 		void placeDoors();
+
+		/**
+		 * \brief Places the level's lights
+		 */
+		void placeLights() const;
 
 		/**
 		 * \brief Updates the level

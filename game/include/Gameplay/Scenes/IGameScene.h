@@ -2,6 +2,11 @@
 
 #include <Scene.h>
 
+namespace LibGL::Resources
+{
+	class Shader;
+}
+
 namespace PFA::Gameplay
 {
 	class IGameScene : public LibGL::Resources::Scene
@@ -22,6 +27,19 @@ namespace PFA::Gameplay
 
 	protected:
 		IGameScene(const LibMath::Vector3& spawnPoint, const LibMath::Vector3& spawnRotation);
+
+		/**
+		 * \brief Gets or loads the shader with the given file name
+		 * \param fileName The path of the shader to load
+		 * \return A pointer to the shader on success. Nullptr otherwise.
+		 */
+		static const LibGL::Resources::Shader* getShader(const std::string& fileName);
+
+		/**
+		 * \brief Update the uniforms for the shader with the given file name
+		 * \param fileName The path of the shader to update
+		 */
+		static void updateShader(const std::string& fileName);
 
 	private:
 		LibMath::Vector3	m_spawnPoint;
