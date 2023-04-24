@@ -136,7 +136,7 @@ void main()
 	for (int i = 0; i < ssbo_lights.length(); i++)
 		litColor += calculateLight(ssbo_lights[i]);
 
-	FragColor = vec4(litColor, g_diffColor.a * 0.15);
+	FragColor = vec4(litColor, g_diffColor.a);
 }
 
 int unpack(int data, int offset, int bitCount)
@@ -199,7 +199,7 @@ vec3 calculatePointLight(mat4 lightMat)
 	PointLight light =
 	{
 		lightMat[0],
-		{ lightMat[1][0], lightMat[2][0], lightMat[3][0] },
+		{ lightMat[1][1], lightMat[2][1], lightMat[3][1] },
 		lightMat[1][2], lightMat[2][2], lightMat[3][2]
 	};
 
