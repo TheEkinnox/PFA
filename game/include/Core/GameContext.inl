@@ -11,7 +11,9 @@ namespace PFA::Core
 
 		static_assert(std::is_same_v<IGameScene, SceneT> || std::is_base_of_v<IGameScene, SceneT>);
 
-		m_scene = std::make_unique<SceneT>();
+		if (typeid(SceneT) != typeid(*m_scene))
+			m_scene = std::make_unique<SceneT>();
+
 		m_scene->load();
 	}
 }
