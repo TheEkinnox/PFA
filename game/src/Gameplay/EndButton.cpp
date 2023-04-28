@@ -30,6 +30,17 @@ namespace PFA::Gameplay
 
 		const auto& inputManager = LGL_SERVICE(InputManager);
 
+#ifdef _DEBUG
+		if (inputManager.isKeyDown(EKey::KEY_LEFT_SHIFT) || inputManager.isKeyDown(EKey::KEY_RIGHT_SHIFT))
+		{
+			if (inputManager.isKeyPressed(EKey::KEY_C))
+			{
+				LGL_SERVICE(LibGL::EventManager).broadcast<LevelCompleteEvent>();
+				return;
+			}
+		}
+#endif
+
 		if (inputManager.isKeyPressed(EKey::KEY_E))
 		{
 			const Vector3 pos = getOwner().getGlobalTransform().getPosition();
