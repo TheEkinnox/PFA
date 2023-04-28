@@ -11,6 +11,7 @@
 #include "Core/EventDefs.h"
 #include "Eventing/EventManager.h"
 #include "LowRenderer/Mesh.h"
+#include "Vector/Vector4.h"
 
 using namespace LibMath;
 using namespace LibGL::Application;
@@ -45,19 +46,24 @@ namespace PFA::Gameplay
 		Component::update();
 
 		const auto& inputManager = LGL_SERVICE(InputManager);
+		const auto& camera = Camera::getCurrent();
+
+		const auto& camCollider = dynamic_cast<Entity*>(camera.getParent())->getComponent<ICollider>();
 
 		if (inputManager.isMouseButtonPressed(EMouseButton::MOUSE_BUTTON_LEFT))
 		{
-			const auto& camera = Camera::getCurrent();
+			Vector3 castPos = camera.getGlobalTransform().getPosition();
+
+			if (camCollider != nullptr)
+			{
+				const Vector3 castOffset = camera.getGlobalTransform().forward() * camCollider->getBounds().m_sphereRadius;
+				const Vector3 closestOnSurface = camCollider->getClosestPointOnSurface(castPos + castOffset);
+
+				castPos = closestOnSurface + castOffset.normalized() * .01f;
+			}
 
 			RaycastHit hitInfo;
-			const auto& camCollider = dynamic_cast<Entity*>(camera.getParent())->getComponent<ICollider>();
-			ASSERT(camCollider != nullptr);
-
-			const Vector3 castOffset = camCollider != nullptr ? camera.getGlobalTransform().forward() *
-				(camCollider->getBounds().m_sphereRadius + .01f) : Vector3::zero();
-
-			if (raycast(camera.getGlobalTransform().getPosition() + castOffset,
+			if (raycast(castPos,
 				camera.getGlobalTransform().forward(), hitInfo))
 			{
 				const Cube* intersectedCube = hitInfo.m_collider->getOwner().getComponent<Cube>();
