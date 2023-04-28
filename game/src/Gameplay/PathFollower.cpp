@@ -1,20 +1,22 @@
 #include"Gameplay/PathFollower.h"
+
 #include <Utility/ServiceLocator.h>
+#include <Utility/Timer.h>
+#include <Entity.h>
 
 using namespace PFA::Gameplay;
 using Vec3 = LibMath::Vector3;
 
-
-
-PFA::Gameplay::PathFollower::PathFollower(LibGL::Entity& p_owner, const std::vector<Vec3>& p_path, ECyclingMode p_cyclingMode, float p_moveSpeed):
-	LibGL::Component( p_owner),
+PathFollower::PathFollower(LibGL::Entity& p_owner, const std::vector<Vec3>& p_path,
+	const ECyclingMode p_cyclingMode, const float p_moveSpeed):
+	Component( p_owner),
 		m_path(p_path),
 		m_currentIndex(0),
 		m_nextIndex(1),
 		m_cyclingMode(p_cyclingMode),
 		m_moveSpeed(p_moveSpeed)
 {
-	
+	getOwner().setPosition(p_path[0]);
 }
 
 Vec3 PathFollower::currentPoint()const
@@ -27,7 +29,7 @@ Vec3 PathFollower::currentPoint()const
 	 return m_path[m_nextIndex];
 }
 
-void PFA::Gameplay::PathFollower::computeNext()
+void PathFollower::computeNext()
 {
 	if (m_currentIndex == m_path.size() - 1)
 	{
@@ -40,7 +42,7 @@ void PFA::Gameplay::PathFollower::computeNext()
 
 		case ECyclingMode::PING_PONG:
 
-			std::reverse(m_path.begin(), m_path.end());
+			std::ranges::reverse(m_path);
 			m_currentIndex = 0;
 			m_nextIndex = 1;
 
@@ -58,23 +60,23 @@ void PFA::Gameplay::PathFollower::computeNext()
 
 void PathFollower::update()
 {
-	float deltaTime = LGL_SERVICE(LibGL::Utility::Timer).getDeltaTime();
-
 	if (!isActive())
 		return;
 
-	const Vec3& next = nextPoint();
+	const float deltaTime = LGL_SERVICE(LibGL::Utility::Timer).getDeltaTime();
 
-	Vec3 toNext = next - getOwner().getPosition();
-	float distanceToNext = toNext.magnitude();
+	const Vec3 toNext = nextPoint() - getOwner().getPosition();
+	const float distanceToNext = toNext.magnitudeSquared();
+	const float moveSpeed = m_moveSpeed * deltaTime;
 
-	if (distanceToNext < m_moveSpeed)
+	if (distanceToNext < moveSpeed * moveSpeed)
 	{
 		m_currentIndex = m_nextIndex;
 		computeNext();
+		getOwner().setPosition(currentPoint());
 	}
 	else
 	{
-		getOwner().translate(toNext.normalized() * m_moveSpeed * deltaTime);
+		getOwner().translate(toNext.normalized() * moveSpeed);
 	}
 }
