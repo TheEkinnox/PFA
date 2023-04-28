@@ -1,8 +1,9 @@
 #pragma once
 #include "Color.h"
-#include "ECompareAlgorithm.h"
-#include "ECullFace.h"
-#include "ERenderingCapability.h"
+#include "Enums/ERenderingCapability.h"
+#include "Enums/EBlendFactor.h"
+#include "Enums/ECompareAlgorithm.h"
+#include "Enums/ECullFace.h"
 #include "LowRenderer/Camera.h"
 
 namespace LibGL::Rendering
@@ -83,6 +84,14 @@ namespace LibGL::Rendering
 		 * \param enableAlpha Whether alpha should be written into the frame buffer on not
 		 */
 		void setColorWriting(bool enableRed, bool enableGreen, bool enableBlue, bool enableAlpha) const;
+
+		/**
+		 * \brief Sets the color blending function to use
+		 * when the BLEND capability is enabled
+		 * \param sourceFactor The source color's factor
+		 * \param destinationFactor The destination color's factor
+		 */
+		void setBlendFunc(EBlendFactor sourceFactor, EBlendFactor destinationFactor) const;
 
 		/**
 		 * \brief Sets the viewport's position and size
