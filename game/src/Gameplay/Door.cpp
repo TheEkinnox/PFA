@@ -71,7 +71,8 @@ namespace PFA::Gameplay
 		Entity& owner = getOwner();
 		ASSERT(typeid(owner) == typeid(Mesh) || dynamic_cast<Mesh*>(&owner) != nullptr);
 
-		m_uvOffset += LibMath::Vector2(LGL_SERVICE(Utility::Timer).getUnscaledDeltaTime());
+		const float scrollSpeed = LGL_SERVICE(Utility::Timer).getUnscaledDeltaTime() * .5f;
+		m_uvOffset += LibMath::Vector2(scrollSpeed);
 
 		Mesh& ownerMesh = dynamic_cast<Mesh&>(owner);
 		ownerMesh.getMaterial().setUVOffset(m_uvOffset);
@@ -79,7 +80,7 @@ namespace PFA::Gameplay
 
 	void Door::bindOnColorChange()
 	{
-		const auto onColorChangeFunc = [this](const Color newColor)
+		const auto onColorChangeFunc = [this](const Color& newColor)
 		{
 			if (newColor.rgb() == m_closedMat.getTint().rgb())
 				open();
@@ -88,19 +89,19 @@ namespace PFA::Gameplay
 		};
 
 		auto& eventManager = LGL_SERVICE(EventManager);
-
-		m_colorChangeListenerId = eventManager.subscribe<Events::ColorChangedEvent>(onColorChangeFunc);
+		m_colorChangeListenerId = eventManager.subscribe<Events::ColorChangedEvent>(
+			onColorChangeFunc);
 	}
 
 	void Door::open() const
 	{
-		const auto& colliders = getOwner().getComponents<Physics::ICollider>();
+		Entity& owner = getOwner();
+		ASSERT(typeid(owner) == typeid(Mesh) || dynamic_cast<Mesh*>(&owner) != nullptr);
+
+		const auto& colliders = owner.getComponents<Physics::ICollider>();
 
 		for (const auto& collider : colliders)
 			collider->setActive(false);
-
-		Entity& owner = getOwner();
-		ASSERT(typeid(owner) == typeid(Mesh) || dynamic_cast<Mesh*>(&owner) != nullptr);
 
 		Mesh& ownerMesh = dynamic_cast<Mesh&>(owner);
 		ownerMesh.getMaterial() = m_openMat;
@@ -115,7 +116,6 @@ namespace PFA::Gameplay
 
 		for (const auto& collider : colliders)
 			collider->setActive(true);
-
 
 		Mesh& ownerMesh = dynamic_cast<Mesh&>(owner);
 		ownerMesh.getMaterial() = m_closedMat;

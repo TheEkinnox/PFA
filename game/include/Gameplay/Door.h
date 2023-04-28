@@ -1,6 +1,6 @@
 #pragma once
 #include "Entity.h"
-#include "Eventing/Event.h"
+#include "Core/EventDefs.h"
 #include "Resources/Material.h"
 
 namespace PFA::Gameplay
@@ -25,8 +25,8 @@ namespace PFA::Gameplay
 		void update() override;
 
 	private:
-		LibGL::Event<>::ListenerId	m_colorChangeListenerId = 0;
-		LibMath::Vector2			m_uvOffset;
+		Events::ColorChangedEvent::ListenerId	m_colorChangeListenerId = 0;
+		LibMath::Vector2						m_uvOffset;
 
 		void bindOnColorChange();
 		void open() const;
