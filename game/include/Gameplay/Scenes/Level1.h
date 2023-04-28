@@ -5,6 +5,7 @@
 
 namespace LibGL::Rendering
 {
+	class Mesh;
 	class Material;
 	struct Color;
 }
@@ -26,9 +27,26 @@ namespace PFA::Gameplay
 		LibGL::Rendering::ShaderStorageBuffer	m_lightsSSBO;
 
 		/**
+		 * \brief Adds a floor to the scene with the given transform
+		 * \param transform The floor's transform
+		 */
+		void addFloor(const LibMath::Transform& transform);
+
+		/**
 		 * \brief Places the level's floor
 		 */
 		void placeFloor();
+
+		/**
+		 * \brief Adds a stair step to the scene with the given transform
+		 * \param transform The stair step's transform
+		 */
+		void addStair(const LibMath::Transform& transform);
+
+		/**
+		 * \brief Places the level's stairs
+		 */
+		void placeStairs();
 
 		/**
 		 * \brief Adds a wall to the scene with the given transform
@@ -45,8 +63,9 @@ namespace PFA::Gameplay
 		 * \brief Adds a block to the scene with the given transform
 		 * \param transform The block's transform
 		 * \param color The block's color
+		 * \return A reference to the added block's mesh
 		 */
-		void addBlock(const LibMath::Transform& transform,
+		LibGL::Rendering::Mesh& addBlock(const LibMath::Transform& transform,
 			const LibGL::Rendering::Color& color);
 
 		/**
@@ -68,6 +87,17 @@ namespace PFA::Gameplay
 		void placeDoors();
 
 		/**
+		 * \brief Adds a window to the scene with the given transform
+		 * \param transform The window's transform
+		 */
+		void addWindow(const LibMath::Transform& transform);
+
+		/**
+		 * \brief Places the level's windows
+		 */
+		void placeWindows();
+
+		/**
 		 * \brief Places the level's lights
 		 */
 		void placeLights() const;
@@ -76,5 +106,7 @@ namespace PFA::Gameplay
 		 * \brief Updates the level
 		 */
 		void update() override;
+
+		void bindLevelCompleteListener() override;
 	};
 }

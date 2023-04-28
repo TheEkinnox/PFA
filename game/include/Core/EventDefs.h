@@ -20,6 +20,11 @@ namespace PFA::Events
 	class ColorChangedEvent final : public LibGL::Event<LibGL::Rendering::Color> {};
 
 	/**
+	 * \brief An event indicating a level was loaded
+	 */
+	class SceneLoadedEvent final : public LibGL::Event<> {};
+
+	/**
 	 * \brief An event indicating the current level was completed
 	 */
 	class LevelCompleteEvent final : public LibGL::Event<> {};

@@ -26,7 +26,18 @@ namespace PFA::Gameplay
 	Telephone::Telephone(Entity& owner, const Color color) :
 		Component(owner), m_color(color)
 	{
-		updateColor();
+		const auto onSceneLoaded = [this]
+		{
+			updateColor();
+		};
+
+		m_sceneLoadedListenerId = LGL_SERVICE(EventManager).subscribe<SceneLoadedEvent>(onSceneLoaded);
+	}
+
+	Telephone::~Telephone()
+	{
+		if (m_sceneLoadedListenerId != 0)
+			LGL_SERVICE(EventManager).unsubscribe<SceneLoadedEvent>(m_sceneLoadedListenerId);
 	}
 
 	void Telephone::updateColor() const
@@ -67,7 +78,6 @@ namespace PFA::Gameplay
 				camera.getGlobalTransform().forward(), hitInfo))
 			{
 				const Cube* intersectedCube = hitInfo.m_collider->getOwner().getComponent<Cube>();
-				updateColor();
 
 				if (intersectedCube != nullptr)
 				{

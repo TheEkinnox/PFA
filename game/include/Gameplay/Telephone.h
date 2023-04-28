@@ -2,6 +2,7 @@
 #define TELEPHONE_H
 #include "Component.h"
 #include "Core/Color.h"
+#include "Core/EventDefs.h"
 
 namespace PFA::Gameplay
 {
@@ -11,10 +12,13 @@ namespace PFA::Gameplay
 		explicit Telephone(LibGL::Entity& owner,
 			LibGL::Rendering::Color color = LibGL::Rendering::Color::white);
 
+		~Telephone() override;
+
 	private:
 		inline static const char* SWAP_SOUND = "assets/sounds/swap.wav";
 
-		LibGL::Rendering::Color m_color;
+		LibGL::Rendering::Color					m_color;
+		Events::SceneLoadedEvent::ListenerId	m_sceneLoadedListenerId = 0;
 
 		void updateColor() const;
 		void update() override;
