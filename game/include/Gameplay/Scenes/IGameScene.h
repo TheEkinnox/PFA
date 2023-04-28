@@ -2,6 +2,8 @@
 
 #include <Scene.h>
 
+#include "Core/EventDefs.h"
+
 namespace LibGL::Resources
 {
 	class Shader;
@@ -25,15 +27,11 @@ namespace PFA::Gameplay
 		 */
 		virtual IGameScene& load();
 
-		IGameScene(const IGameScene& other) = default;
-		IGameScene(IGameScene&& other) = default;
-		~IGameScene() override = default;
-
-		IGameScene& operator=(const IGameScene& other) = default;
-		IGameScene& operator=(IGameScene&& other) = default;
-
 	protected:
-		IGameScene(const LibMath::Vector3& spawnPoint, const LibMath::Vector3& spawnRotation);
+		Events::LevelCompleteEvent::ListenerId	m_levelCompleteListenerId = 0;
+
+		IGameScene(const LibMath::Vector3& spawnPoint, const LibMath::Vector3& spawnRotation,
+			const LibMath::Vector3& endPoint);
 
 		/**
 		 * \brief Gets or loads the shader with the given file name
@@ -48,9 +46,20 @@ namespace PFA::Gameplay
 		 */
 		static void updateShader(const std::string& fileName);
 
+		/**
+		 * \brief Binds the function to call when the current level is complete
+		 */
+		virtual void bindLevelCompleteListener() = 0;
+
 	private:
 		LibMath::Vector3			m_spawnPoint;
 		LibMath::Vector3			m_spawnRotation;
+		LibMath::Vector3			m_endPoint;
 		LibGL::Event<>::ListenerId	m_resizeListenerId = 0;
+
+		/**
+		 * \brief Places the level's end point
+		 */
+		void addEndPoint();
 	};
 }
