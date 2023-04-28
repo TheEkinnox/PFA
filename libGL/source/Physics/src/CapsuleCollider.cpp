@@ -22,7 +22,8 @@ namespace LibGL::Physics
 
 	Vector3 CapsuleCollider::getUpDirection() const
 	{
-		return m_upDirection;
+		const auto& owner = getOwner();
+		return (owner.getMatrix() * Vector4(m_upDirection, 0.f)).xyz();
 	}
 
 	float CapsuleCollider::getHeight() const
@@ -59,10 +60,10 @@ namespace LibGL::Physics
 		return point.distanceSquaredFrom(closestPoint) <= radius * radius;
 	}
 
-	bool CapsuleCollider::check(const Ray& ray) const
+	bool CapsuleCollider::check(const Ray& ray, float& distanceSqr) const
 	{
 		// Check the bounding spheres first to avoid unnecessary computation
-		if (!ICollider::check(ray))
+		if (!ICollider::check(ray, distanceSqr))
 			return false;
 
 		const auto [center, _, halfHeight] = getBounds();
@@ -79,7 +80,9 @@ namespace LibGL::Physics
 
 		rayClosest = ray.getClosestPoint(capsuleClosest);
 
-		return rayClosest.distanceSquaredFrom(capsuleClosest) <= radius * radius;
+		const bool colliding = rayClosest.distanceSquaredFrom(center) <= radius * radius;
+		distanceSqr = colliding ? rayClosest.distanceFrom(ray.m_origin) : INFINITY;
+		return colliding;
 	}
 
 	bool CapsuleCollider::check(const ICollider& other) const

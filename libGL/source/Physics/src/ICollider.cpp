@@ -87,10 +87,13 @@ namespace LibGL::Physics
 		return point.distanceSquaredFrom(center) <= radius * radius;
 	}
 
-	bool ICollider::check(const Ray& ray) const
+	bool ICollider::check(const Ray& ray, float& distanceSqr) const
 	{
 		const auto [center, _, radius] = getBounds();
-		return ray.distanceSquaredFrom(center) <= radius * radius;
+		const Vector3 closestPoint = ray.getClosestPoint(center);
+		const bool colliding = closestPoint.distanceSquaredFrom(center) <= radius * radius;
+		distanceSqr = colliding ? closestPoint.distanceSquaredFrom(ray.m_origin) : INFINITY;
+		return colliding;
 	}
 
 	bool ICollider::check(const ICollider& other) const
