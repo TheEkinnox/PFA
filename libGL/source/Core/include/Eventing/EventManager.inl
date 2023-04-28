@@ -20,7 +20,7 @@ namespace LibGL
 	}
 
 	template <typename EventType>
-	void EventManager::unsubscribe(const IEvent::ListenerId listener)
+	void EventManager::unsubscribe(IEvent::ListenerId& listenerId)
 	{
 		static_assert(std::is_base_of_v<IEvent, EventType>);
 
@@ -29,7 +29,7 @@ namespace LibGL
 		if (!m_events.contains(typeHash))
 			return;
 
-		m_events[typeHash]->unsubscribe(listener);
+		m_events[typeHash]->unsubscribe(listenerId);
 	}
 
 	template <typename EventType, typename ... Args>

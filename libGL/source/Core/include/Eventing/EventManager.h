@@ -16,7 +16,7 @@ namespace LibGL
 		IEvent::ListenerId subscribe(typename EventType::Action action);
 
 		template <typename EventType>
-		void unsubscribe(IEvent::ListenerId listener);
+		void unsubscribe(IEvent::ListenerId& listenerId);
 
 		template <typename EventType, typename ...Args>
 		void broadcast(Args... args);

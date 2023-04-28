@@ -14,7 +14,7 @@ namespace LibGL
 
 		virtual ~IEvent() = default;
 
-		virtual void unsubscribe(ListenerId listener) = 0;
+		virtual void unsubscribe(ListenerId& listener) = 0;
 		virtual size_t subscribersCount() const = 0;
 		virtual void clear() = 0;
 
@@ -38,9 +38,9 @@ namespace LibGL
 
 		/**
 		 * \brief Unsubscribes the listener with the given id from this event
-		 * \param listener The id of the listener to unsubscribe
+		 * \param listenerId The id of the listener to unsubscribe
 		 */
-		void unsubscribe(ListenerId listener) override;
+		void unsubscribe(ListenerId& listenerId) override;
 
 		/**
 		 * \brief Gets the current number of subscribed actions

@@ -12,10 +12,12 @@ namespace LibGL
 	}
 
 	template <class ... ArgTypes>
-	void Event<ArgTypes...>::unsubscribe(ListenerId listener)
+	void Event<ArgTypes...>::unsubscribe(ListenerId& listenerId)
 	{
-		if (m_actions.contains(listener))
-			m_actions.erase(listener);
+		if (m_actions.contains(listenerId))
+			m_actions.erase(listenerId);
+
+		listenerId = 0;
 	}
 
 	template <class ... ArgTypes>
