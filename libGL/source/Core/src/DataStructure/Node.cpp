@@ -23,13 +23,11 @@ namespace LibGL::DataStructure
 
 	Node::~Node()
 	{
-		for (const NodePtr& child : m_children)
-			child->m_parent = nullptr;
-
 		if (m_parent != nullptr)
 			m_parent->removeChild(*this);
 
-		m_children.clear();
+		while (!m_children.empty())
+			Node::removeChild(*m_children[0]);
 	}
 
 	Node& Node::operator=(const Node& other)
@@ -86,7 +84,7 @@ namespace LibGL::DataStructure
 
 	void Node::removeChild(Node& child)
 	{
-		const auto findFunc = [child](const NodePtr& node)
+		const auto findFunc = [&child](const NodePtr& node)
 		{
 			return *node == child;
 		};
@@ -96,6 +94,7 @@ namespace LibGL::DataStructure
 		if (childIter != m_children.end())
 		{
 			child.m_parent = nullptr;
+			delete *childIter;
 			m_children.erase(childIter);
 		}
 	}

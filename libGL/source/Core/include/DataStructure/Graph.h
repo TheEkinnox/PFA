@@ -15,7 +15,7 @@ namespace LibGL::DataStructure
 		Graph() = default;
 		Graph(const Graph& other) = default;
 		Graph(Graph&& other) noexcept = default;
-		virtual ~Graph() = default;
+		virtual ~Graph();
 
 		Graph& operator=(const Graph& other) = default;
 		Graph& operator=(Graph&& other) noexcept = default;
@@ -46,7 +46,13 @@ namespace LibGL::DataStructure
 		 * \brief Gets the graph's root nodes list
 		 * \return The graph's root nodes list
 		 */
-		std::vector<std::shared_ptr<NodeT>> getNodes();
+		std::vector<NodeT*>& getNodes();
+
+		/**
+		 * \brief Gets the graph's root nodes list
+		 * \return The graph's root nodes list
+		 */
+		std::vector<const NodeT*> getNodes() const;
 
 		/**
 		 * \brief Removes all nodes from the graph
@@ -54,7 +60,7 @@ namespace LibGL::DataStructure
 		void clear();
 
 	private:
-		std::vector<std::shared_ptr<NodeT>>	m_nodes;
+		std::vector<NodeT*>	m_nodes;
 	};
 }
 

@@ -41,7 +41,13 @@ namespace LibGL
 	Entity::~Entity()
 	{
 		if (!m_components.empty())
-			m_components.clear();
+		{
+			// Components remove themselves from the list on destruction.
+			// Can't for / foreach (would overflow)
+
+			while (!m_components.empty())
+				delete m_components[0];
+		}
 	}
 
 	Entity& Entity::operator=(const Entity& other)
@@ -105,7 +111,13 @@ namespace LibGL
 			return *ptr == component;
 		};
 
-		std::erase_if(m_components, findFunc);
+		const auto iter = std::ranges::find_if(m_components, findFunc);
+
+		if (iter != m_components.end())
+		{
+			delete* iter;
+			m_components.erase(iter);
+		}
 	}
 
 	void Entity::removeComponent(const Component::ComponentId id)
@@ -127,7 +139,7 @@ namespace LibGL
 			component->update();
 
 		for (const NodePtr& child : getChildren())
-			reinterpret_cast<Entity*>(child.get())->update();
+			reinterpret_cast<Entity*>(child)->update();
 	}
 
 	void Entity::onChange()
@@ -138,7 +150,7 @@ namespace LibGL
 
 		for (const NodePtr& child : getChildren())
 			if (child != nullptr)
-				reinterpret_cast<Entity*>(child.get())->onChange();
+				reinterpret_cast<Entity*>(child)->onChange();
 	}
 
 	void Entity::updateGlobalTransform()
@@ -150,7 +162,11 @@ namespace LibGL
 		if (castParent != nullptr)
 		{
 			const Transform parentTransform = castParent->getGlobalTransform();
-			m_globalTransform.translate(parentTransform.getPosition());
+			const Matrix4 rotationMat = Matrix4::rotation(parentTransform.getRotation(), false);
+			const Matrix4 translationMat = Matrix4::translation(parentTransform.getPosition());
+			const Matrix4 scalingMat = Matrix4::scaling(parentTransform.getScale());
+			const Vector4 posVec4 = Vector4(getPosition(), 1.f);
+			m_globalTransform.setPosition((translationMat * scalingMat * rotationMat * posVec4).xyz());
 			m_globalTransform.rotate(parentTransform.getRotation());
 			m_globalTransform.scale(parentTransform.getScale());
 		}

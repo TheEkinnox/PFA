@@ -10,7 +10,7 @@ namespace LibGL
 	{
 		static_assert(std::is_same_v<Component, T> || std::is_base_of_v<Component, T>);
 
-		m_components.push_back(std::make_shared<T>(*this, args...));
+		m_components.push_back(new T(*this, args...));
 
 		return static_cast<T&>(*m_components.back());
 	}
@@ -33,8 +33,8 @@ namespace LibGL
 
 		for (const auto& component : m_components)
 		{
-			if (typeid(component.get()) == typeid(T*) || dynamic_cast<T*>(component.get()) != nullptr)
-				return dynamic_cast<T*>(component.get());
+			if (typeid(component) == typeid(T*) || dynamic_cast<T*>(component) != nullptr)
+				return dynamic_cast<T*>(component);
 		}
 
 		return nullptr;
@@ -48,10 +48,10 @@ namespace LibGL
 		for (const auto& component : m_components)
 		{
 			if (id == component->getId() &&
-				(typeid(component.get()) == typeid(T*) ||
-					dynamic_cast<T*>(component.get()) != nullptr))
+				(typeid(component) == typeid(T*) ||
+					dynamic_cast<T*>(component) != nullptr))
 			{
-				return dynamic_cast<T*>(component.get());
+				return dynamic_cast<T*>(component);
 			}
 		}
 
@@ -59,16 +59,16 @@ namespace LibGL
 	}
 
 	template <typename T>
-	std::vector<std::shared_ptr<T>> Entity::getComponents()
+	std::vector<T*> Entity::getComponents()
 	{
 		static_assert(std::is_same_v<Component, T> || std::is_base_of_v<Component, T>);
 
-		std::vector<std::shared_ptr<T>> components;
+		std::vector<T*> components;
 
 		for (const auto& component : m_components)
 		{
-			if (typeid(component.get()) == typeid(T*) || dynamic_cast<T*>(component.get()) != nullptr)
-				components.push_back(std::dynamic_pointer_cast<T>(component));
+			if (typeid(component) == typeid(T*) || dynamic_cast<T*>(component) != nullptr)
+				components.push_back(dynamic_cast<T*>(component));
 		}
 
 		return components;

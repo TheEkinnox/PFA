@@ -7,7 +7,7 @@ namespace LibGL::DataStructure
 	{
 	public:
 		typedef uint64_t NodeId;
-		typedef std::shared_ptr<Node> NodePtr;
+		typedef Node* NodePtr;
 		typedef std::vector<NodePtr> NodeList;
 
 		Node(const Node& other);

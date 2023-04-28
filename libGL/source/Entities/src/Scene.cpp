@@ -4,7 +4,9 @@ namespace LibGL::Resources
 {
 	void Scene::update()
 	{
-		for (const auto& node : getNodes())
+		const auto& nodes = getNodes();
+
+		for (const auto node : nodes)
 			node->update();
 	}
 }

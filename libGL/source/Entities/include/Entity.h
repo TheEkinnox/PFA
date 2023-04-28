@@ -1,5 +1,4 @@
 #pragma once
-#include <memory> // shared_ptr
 #include <vector>
 
 #include "Transform.h"
@@ -10,7 +9,7 @@ namespace LibGL
 {
 	class Entity : public DataStructure::Node, public LibMath::Transform
 	{
-		typedef std::shared_ptr<Component> ComponentPtr;
+		typedef Component* ComponentPtr;
 		typedef std::vector<ComponentPtr> ComponentList;
 
 	public:
@@ -51,7 +50,7 @@ namespace LibGL
 		T* getComponent(Component::ComponentId id);
 
 		template <typename T>
-		std::vector<std::shared_ptr<T>> getComponents();
+		std::vector<T*> getComponents();
 
 		/**
 		 * \brief Removes the given node from this node's children
