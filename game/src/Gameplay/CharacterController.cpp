@@ -11,7 +11,7 @@
 #include "Raycast.h"
 #include "Core/AudioManager.h"
 
-#define MAX_GROUND_DISTANCE .1f // The maximum distance from the ground at which the player is considered to be touching it
+#define MAX_GROUND_DISTANCE .45f // The maximum distance from the ground at which the player is considered to be touching it
 #define SPRINT_MULTIPLIER 1.5f
 
 using namespace LibMath;
