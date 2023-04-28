@@ -9,8 +9,8 @@
 #include "Utility/ServiceLocator.h"
 
 // TODO (NTH) : Load config from a file
-#define WINDOW_WIDTH 1280
-#define WINDOW_HEIGHT 720
+#define WINDOW_WIDTH 1920
+#define WINDOW_HEIGHT 1080
 #define APP_TITLE "PFA - LAN (Esc. to close)"
 
 using namespace LibGL;
@@ -21,6 +21,7 @@ using namespace LibGL::Resources;
 using namespace LibGL::Rendering;
 
 using namespace PFA::Gameplay;
+using namespace PFA::Events;
 
 namespace PFA::Core
 {
@@ -36,7 +37,11 @@ namespace PFA::Core
 		Debug::Log::openFile("console.log");
 
 		m_renderer->setCapability(ERenderingCapability::BLEND, true);
+		m_renderer->setBlendFunc(EBlendFactor::SRC_ALPHA, EBlendFactor::ONE_MINUS_SRC_ALPHA);
+
 		m_renderer->setCapability(ERenderingCapability::CULL_FACE, true);
+		m_renderer->setCullFace(ECullFace::BACK);
+
 		m_renderer->setCapability(ERenderingCapability::DEPTH_TEST, true);
 
 		ServiceLocator::provide<Renderer>(*m_renderer);
@@ -62,6 +67,26 @@ namespace PFA::Core
 	void GameContext::update()
 	{
 		IContext::update();
+
+		const auto& inputManager = LGL_SERVICE(InputManager);
+
+		if (inputManager.isKeyPressed(EKey::KEY_ESCAPE))
+		{
+			LGL_SERVICE(LibGL::EventManager).broadcast<ExitEvent>();
+			return;
+		}
+
+#ifdef _DEBUG
+		if (inputManager.isKeyDown(EKey::KEY_LEFT_SHIFT) || inputManager.isKeyDown(EKey::KEY_RIGHT_SHIFT))
+		{
+			if (inputManager.isKeyPressed(EKey::KEY_R))
+			{
+				LGL_SERVICE(LibGL::EventManager).broadcast<RestartEvent>();
+				return;
+			}
+		}
+#endif
+
 		m_inputManager->updateMouse();
 		m_renderer->clear(Camera::getCurrent());
 
@@ -80,25 +105,22 @@ namespace PFA::Core
 
 	void GameContext::bindExitFunc()
 	{
-		const auto exitFunc = [&]
+		const auto exitFunc = [this]
 		{
 			m_inputManager->clearStates();
 			m_window->setShouldClose(true);
 		};
 
-		m_exitListenerId = LGL_SERVICE(EventManager).subscribe<Events::ExitEvent>(exitFunc);
+		m_exitListenerId = LGL_SERVICE(EventManager).subscribe<ExitEvent>(exitFunc);
 	}
 
 	void GameContext::bindRestartFunc()
 	{
-		const auto restartFunc = [&]
+		const auto restartFunc = [this]
 		{
-			if (m_scene)
-				m_scene->clear();
-
 			loadScene<Level1>();
 		};
 
-		m_restartListenerId = LGL_SERVICE(EventManager).subscribe<Events::RestartEvent>(restartFunc);
+		m_restartListenerId = LGL_SERVICE(EventManager).subscribe<RestartEvent>(restartFunc);
 	}
 }
