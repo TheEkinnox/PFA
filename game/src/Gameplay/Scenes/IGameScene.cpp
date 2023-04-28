@@ -34,6 +34,11 @@ namespace PFA::Gameplay
 	{
 	}
 
+	IGameScene::~IGameScene()
+	{
+		LGL_SERVICE(Window).m_resizeEvent.unsubscribe(m_resizeListenerId);
+	}
+
 	IGameScene& IGameScene::load()
 	{
 		// Clear the scene in case it was already loaded
@@ -72,6 +77,16 @@ namespace PFA::Gameplay
 
 		// Set the scene cam as the current camera
 		Camera::setCurrent(cam);
+
+		const auto resizeFunc = [](const Window::dimensions_t size)
+		{
+			LGL_SERVICE(Renderer).setViewPort(0, 0, size.first, size.second);
+			Camera::getCurrent().setProjectionMatrix(Matrix4::perspectiveProjection(90_deg,
+				static_cast<float>(size.first) / static_cast<float>(size.second),
+				.1f, 150.f));
+		};
+
+		m_resizeListenerId = LGL_SERVICE(Window).m_resizeEvent.subscribe(resizeFunc);
 
 		// Add the telephone to the camera
 		auto& resourceManager = LGL_SERVICE(ResourceManager);

@@ -12,6 +12,13 @@ namespace PFA::Gameplay
 	class IGameScene : public LibGL::Resources::Scene
 	{
 	public:
+		IGameScene(const IGameScene& other) = default;
+		IGameScene(IGameScene&& other) = default;
+		~IGameScene() override;
+
+		IGameScene& operator=(const IGameScene& other) = default;
+		IGameScene& operator=(IGameScene&& other) = default;
+
 		/**
 		 * \brief Loads the scene
 		 * \return A reference to the current scene
@@ -42,7 +49,8 @@ namespace PFA::Gameplay
 		static void updateShader(const std::string& fileName);
 
 	private:
-		LibMath::Vector3	m_spawnPoint;
-		LibMath::Vector3	m_spawnRotation;
+		LibMath::Vector3			m_spawnPoint;
+		LibMath::Vector3			m_spawnRotation;
+		LibGL::Event<>::ListenerId	m_resizeListenerId = 0;
 	};
 }
