@@ -6,7 +6,7 @@ namespace PFA::Gameplay
 	class EndButton final : public LibGL::Component
 	{
 	public:
-		EndButton(LibGL::Entity& parent, float useRange);
+		EndButton(LibGL::Entity& owner, float useRange);
 
 		void update() override;
 
