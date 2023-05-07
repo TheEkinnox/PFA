@@ -33,7 +33,7 @@ using namespace PFA::Events;
 namespace PFA::Gameplay
 {
 	Level1::Level1() :
-		IGameScene(Vector3(18.f, .05f, 20.f), Vector3(0.f, 90.f, 0.f),
+		IGameScene(Vector3(18.f, .05f, 20.f), Vector3(0.f, -90.f, 0.f),
 			Vector3(8.f, 0.f, 7.f)),
 		m_lightsSSBO(EAccessSpecifier::STREAM_DRAW)
 	{

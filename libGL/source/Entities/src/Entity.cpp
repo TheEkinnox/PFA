@@ -160,16 +160,7 @@ namespace LibGL
 		const Entity* castParent = dynamic_cast<Entity*>(getParent());
 
 		if (castParent != nullptr)
-		{
-			const Transform parentTransform = castParent->getGlobalTransform();
-			const Matrix4 rotationMat = Matrix4::rotation(parentTransform.getRotation(), false);
-			const Matrix4 translationMat = Matrix4::translation(parentTransform.getPosition());
-			const Matrix4 scalingMat = Matrix4::scaling(parentTransform.getScale());
-			const Vector4 posVec4 = Vector4(getPosition(), 1.f);
-			m_globalTransform.setPosition((translationMat * scalingMat * rotationMat * posVec4).xyz());
-			m_globalTransform.rotate(parentTransform.getRotation());
-			m_globalTransform.scale(parentTransform.getScale());
-		}
+			m_globalTransform = castParent->getGlobalTransform() * m_globalTransform;
 	}
 
 	void Entity::removeChild(Node& child)

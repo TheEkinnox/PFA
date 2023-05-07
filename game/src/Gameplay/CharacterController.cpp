@@ -103,7 +103,7 @@ namespace PFA::Gameplay
 		// Rotate the player from left to right
 		Vector3 rotation = getOwner().getRotation();
 
-		rotation.m_y += mouseDelta.m_x * rotationSpeed;
+		rotation.m_y -= mouseDelta.m_x * rotationSpeed;
 		rotation.m_y = wrap(rotation.m_y, 0.f, 360.f);
 
 		getOwner().setRotation(rotation);
@@ -111,8 +111,8 @@ namespace PFA::Gameplay
 		// Make the camera look up or down
 		Vector3 camRotation = camera.getRotation();
 
-		camRotation.m_x += -mouseDelta.m_y * rotationSpeed;
-		camRotation.m_x = clamp(camRotation.m_x, -80.f, 80.f);
+		camRotation.m_x += mouseDelta.m_y * rotationSpeed;
+		camRotation.m_x = clamp(camRotation.m_x, -90.f, 90.f);
 
 		camera.setRotation(camRotation);
 	}
