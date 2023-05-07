@@ -2,7 +2,6 @@
 
 #include "Gameplay/CharacterController.h"
 #include "BoxCollider.h"
-#include "LowRenderer/Camera.h"
 #include "Window.h"
 #include "Angle/Degree.h"
 #include "Core/Renderer.h"
@@ -74,54 +73,9 @@ namespace PFA::Gameplay
 			ROTATION_SPEED, JUMP_FORCE);
 
 		// Setup the camera
-		const auto projMat = Matrix4::perspectiveProjection(90_deg,
-			LGL_SERVICE(LibGL::Application::Window).getAspect(), .1f, 150.f);
-
-		const Vector4 camPos = playerTransform.getMatrix().inverse() * Vector4(0.f, CAM_HEIGHT, 0.f, 1.f);
-
-		const Transform camTransform
-		{
-			camPos.xyz(),
-			Vector3::zero(),
-			Vector3::one() / player.getScale()
-		};
-
-		Camera& cam = player.addChild<Camera>(camTransform, projMat);
+		addCamera(player);
 
 		player.translate(m_spawnPoint);
-
-		// Set the scene cam as the current camera
-		Camera::setCurrent(cam);
-
-		const auto resizeFunc = [](const Window::dimensions_t size)
-		{
-			LGL_SERVICE(Renderer).setViewPort(0, 0, size.first, size.second);
-			Camera::getCurrent().setProjectionMatrix(Matrix4::perspectiveProjection(90_deg,
-				static_cast<float>(size.first) / static_cast<float>(size.second),
-				.1f, 150.f));
-		};
-
-		m_resizeListenerId = LGL_SERVICE(Window).m_resizeEvent.subscribe(resizeFunc);
-
-		// Add the telephone to the camera
-		auto& resourceManager = LGL_SERVICE(ResourceManager);
-		const Shader* unlitShader = getShader("shaders/Unlit.glsl");
-		Model* phoneModel = resourceManager.getOrCreate<Model>("meshes/primitives/cube.obj");
-
-		Material phoneMat
-		{
-			*unlitShader,
-			{ },
-			{ },
-			{ },
-			0
-		};
-
-		Mesh& phoneEntity = cam.addChild<Mesh>(*phoneModel, phoneMat);
-		phoneEntity.addComponent<Telephone>();
-		phoneEntity.setScale(Vector3(.1f));
-		phoneEntity.setRotation(Vector3(0.f, 180.f, 0.f));
-		phoneEntity.setPosition(Vector3(.4f, -.4f, -.2f));
 
 		addEndPoint();
 
@@ -159,6 +113,98 @@ namespace PFA::Gameplay
 		shader->setUniformVec3("u_viewPos", Camera::getCurrent().getGlobalTransform().getPosition());
 
 		Shader::unbind();
+	}
+
+	void IGameScene::addCamera(Entity& parent)
+	{
+		const auto projMat = Matrix4::perspectiveProjection(60_deg,
+			LGL_SERVICE(LibGL::Application::Window).getAspect(), .3f, 1000.f);
+
+		const Vector4 camPos = parent.getMatrix().inverse() * Vector4(0.f, CAM_HEIGHT, 0.f, 1.f);
+
+		const Transform camTransform
+		{
+			camPos.xyz(),
+			Vector3(0.f, 0.f, 0.f),
+			Vector3::one() / parent.getScale()
+		};
+
+		Camera& cam = parent.addChild<Camera>(camTransform, projMat);
+
+		// Set the scene cam as the current camera
+		Camera::setCurrent(cam);
+
+		// Bind the window resize function
+		bindResizeListener();
+
+		// Add the telephone and crosshair to the camera
+		addPhone(cam);
+		addCrosshair(cam);
+	}
+
+	void IGameScene::bindResizeListener()
+	{
+		if (m_resizeListenerId != 0)
+			LGL_SERVICE(Window).m_resizeEvent.unsubscribe(m_resizeListenerId);
+
+		const auto resizeFunc = [](const Window::dimensions_t size)
+		{
+			LGL_SERVICE(Renderer).setViewPort(0, 0, size.first, size.second);
+			Camera::getCurrent().setProjectionMatrix(Matrix4::perspectiveProjection(60_deg,
+				static_cast<float>(size.first) / static_cast<float>(size.second),
+				.3f, 1000.f));
+		};
+
+		m_resizeListenerId = LGL_SERVICE(Window).m_resizeEvent.subscribe(resizeFunc);
+	}
+
+	void IGameScene::addPhone(Camera& camera) const
+	{
+		auto& resourceManager = LGL_SERVICE(ResourceManager);
+		const Shader* unlitShader = getShader("shaders/Unlit.glsl");
+		Model* phoneModel = resourceManager.getOrCreate<Model>("meshes/primitives/quad.obj");
+		Texture* phoneTexture = resourceManager.getOrCreate<Texture>("textures/ui/telephone.png");
+		phoneTexture->setMinFilter(ETextureFilter::NEAREST);
+		phoneTexture->setMagFilter(ETextureFilter::NEAREST);
+
+		Material phoneMat
+		{
+			*unlitShader,
+			{ phoneTexture },
+			{ },
+			{ },
+			0
+		};
+
+		Mesh& phoneEntity = camera.addChild<Mesh>(*phoneModel, phoneMat);
+		phoneEntity.addComponent<Telephone>();
+		phoneEntity.setPosition(Vector3(.27f, -.122f, -.31f));
+		phoneEntity.setRotation(Vector3(0.f, 180.f, 0.f));
+		phoneEntity.setScale(Vector3(.06f, .08f, 1.f));
+	}
+
+	void IGameScene::addCrosshair(Camera& camera) const
+	{
+		auto& resourceManager = LGL_SERVICE(ResourceManager);
+		const Shader* unlitShader = getShader("shaders/Unlit.glsl");
+		Model* crosshairModel = resourceManager.getOrCreate<Model>("meshes/primitives/quad.obj");
+		Texture* crosshairTexture = resourceManager.getOrCreate<Texture>("textures/ui/crosshair.png");
+		crosshairTexture->setMinFilter(ETextureFilter::NEAREST);
+		crosshairTexture->setMagFilter(ETextureFilter::NEAREST);
+
+		Material crosshairMat
+		{
+			*unlitShader,
+			{ crosshairTexture },
+			{ },
+			{ },
+			0
+		};
+
+		Mesh& crosshairEntity = camera.addChild<Mesh>(*crosshairModel, crosshairMat);
+		crosshairEntity.setPosition(Vector3(0.f, 0.f, -.31f));
+		crosshairEntity.setRotation(Vector3(0.f, 180.f, 0.f));
+		crosshairEntity.setScale(Vector3(.002f, .002f, 1.f));
 	}
 
 	void IGameScene::addEndPoint()

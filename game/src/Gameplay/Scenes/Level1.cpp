@@ -618,7 +618,7 @@ namespace PFA::Gameplay
 			{ 14.05f, 1.45f, 7.f },
 			{ 0.f, 0.f, 0.f },
 			{ .1f, 2.9f, 10.f }
-			});
+		});
 
 #pragma region WINDOWS_FLOOR_1
 		addWindow({

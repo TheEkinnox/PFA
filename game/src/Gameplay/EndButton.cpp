@@ -41,7 +41,7 @@ namespace PFA::Gameplay
 		}
 #endif
 
-		if (inputManager.isKeyPressed(EKey::KEY_E))
+		if (inputManager.isMouseButtonPressed(EMouseButton::MOUSE_BUTTON_LEFT))
 		{
 			const Vector3 pos = getOwner().getGlobalTransform().getPosition();
 

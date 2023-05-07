@@ -3,6 +3,7 @@
 #include <Scene.h>
 
 #include "Core/EventDefs.h"
+#include "LowRenderer/Camera.h"
 
 namespace LibGL::Resources
 {
@@ -56,6 +57,29 @@ namespace PFA::Gameplay
 		LibMath::Vector3			m_spawnRotation;
 		LibMath::Vector3			m_endPoint;
 		LibGL::Event<>::ListenerId	m_resizeListenerId = 0;
+
+		/**
+		 * \brief Adds the camera in the scene as a child of the given entity
+		 * \param parent The entity of which the camera is a child
+		 */
+		void addCamera(LibGL::Entity& parent);
+
+		/**
+		 * \brief Binds the function to call when the window's size changes
+		 */
+		void bindResizeListener();
+
+		/**
+		 * \brief Adds the telephone in the scene as a child of the given Camera
+		 * \param camera The camera of which the phone is a child
+		 */
+		void addPhone(LibGL::Rendering::Camera& camera) const;
+
+		/**
+		 * \brief Adds the crosshair in the scene as a child of the given Camera
+		 * \param camera The camera of which the crosshair is a child
+		 */
+		void addCrosshair(LibGL::Rendering::Camera& camera) const;
 
 		/**
 		 * \brief Places the level's end point
