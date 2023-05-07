@@ -1,7 +1,6 @@
 #include "Transform.h"
 
-#include "Trigonometry.h"
-#include "Angle/Degree.h"
+#include "Vector/Vector4.h"
 
 namespace LibMath
 {
@@ -61,35 +60,40 @@ namespace LibMath
 		return *this;
 	}
 
+	Transform Transform::operator*(const Transform& other) const
+	{
+		Transform result = *this;
+		return result *= other;
+	}
+
+	Transform& Transform::operator*=(const Transform& other)
+	{
+		const Matrix4 newMat = getMatrix() * other.getMatrix();
+
+		m_position = Vector3(newMat(0, 3), newMat(1, 3), newMat(2, 3));
+		m_rotation += other.getRotation();
+		m_rotation.m_x *= -1.f;
+		m_rotation.m_z *= -1.f;
+		m_scale *= other.getScale();
+
+		onChange();
+
+		return *this;
+	}
+
 	Vector3 Transform::forward() const
 	{
-		const auto xDegrees = Degree(m_rotation.m_x);
-		const auto yDegrees = Degree(m_rotation.m_y);
-
-		return Vector3
-		{
-			cos(xDegrees) * sin(yDegrees),
-			sin(xDegrees),
-			-cos(xDegrees) * cos(yDegrees)
-		}.normalized();
+		return up().cross(right());
 	}
 
 	Vector3 Transform::right() const
 	{
-		const auto xDegrees = Degree(m_rotation.m_x);
-		const auto yDegrees = Degree(m_rotation.m_y);
-
-		return Vector3
-		{
-			cos(yDegrees),
-			0,
-			sin(yDegrees)
-		}.normalized();
+		return (m_matrix * Vector4::right()).xyz().normalized();
 	}
 
 	Vector3 Transform::up() const
 	{
-		return right().cross(forward());
+		return (m_matrix * Vector4::up()).xyz().normalized();
 	}
 
 	Vector3 Transform::back() const

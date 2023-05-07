@@ -54,6 +54,20 @@ namespace LibMath
 		Transform& operator=(Transform&& other) noexcept;
 
 		/**
+		 * \brief Applies the given transformations to the current transform
+		 * \param other The transform to apply to the current transform
+		 * \return A reference to the current transform
+		 */
+		Transform& operator*=(const Transform& other);
+
+		/**
+		 * \brief Applies the given transformations to the current transform
+		 * \param other The transform to apply to the current transform
+		 * \return The transformed transform
+		 */
+		Transform operator*(const Transform& other) const;
+
+		/**
 		 * \brief Computes the transform's forward vector
 		 * \return The transform's forward vector
 		 */
