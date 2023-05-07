@@ -129,6 +129,12 @@ void main()
 	else
 		g_diffColor = u_material.tint;
 
+	if (g_diffColor.a == 0)
+	{
+		discard;
+		return;
+	}
+
 	g_viewDir = normalize(u_viewPos - fs_in.FragPos);
 
 	vec3 litColor = vec3(0);
