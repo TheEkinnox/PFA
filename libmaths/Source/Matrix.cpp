@@ -196,9 +196,9 @@ namespace LibMath
 	{
 		Matrix4x4 translationMatrix(1.f);
 
-		translationMatrix[translationMatrix.getIndex(0, 3)] = x;
-		translationMatrix[translationMatrix.getIndex(1, 3)] = y;
-		translationMatrix[translationMatrix.getIndex(2, 3)] = z;
+		translationMatrix(0, 3) = x;
+		translationMatrix(1, 3) = y;
+		translationMatrix(2, 3) = z;
 
 		return translationMatrix;
 	}
@@ -212,10 +212,10 @@ namespace LibMath
 	{
 		Matrix4x4 scalingMatrix;
 
-		scalingMatrix[scalingMatrix.getIndex(0, 0)] = x;
-		scalingMatrix[scalingMatrix.getIndex(1, 1)] = y;
-		scalingMatrix[scalingMatrix.getIndex(2, 2)] = z;
-		scalingMatrix[scalingMatrix.getIndex(3, 3)] = 1.f;
+		scalingMatrix(0, 0) = x;
+		scalingMatrix(1, 1) = y;
+		scalingMatrix(2, 2) = z;
+		scalingMatrix(3, 3) = 1.f;
 
 		return scalingMatrix;
 	}
@@ -233,25 +233,25 @@ namespace LibMath
 
 		Matrix4x4 mat;
 
-		mat[mat.getIndex(0, 0)] = cos + dir.m_x * dir.m_x * (1.f - cos);
-		mat[mat.getIndex(0, 1)] = dir.m_x * dir.m_y * (1 - cos) - dir.m_z * sin;
-		mat[mat.getIndex(0, 2)] = dir.m_x * dir.m_z * (1 - cos) + dir.m_y * sin;
-		mat[mat.getIndex(0, 3)] = 0.f;
+		mat(0, 0) = cos + dir.m_x * dir.m_x * (1.f - cos);
+		mat(0, 1) = dir.m_x * dir.m_y * (1 - cos) - dir.m_z * sin;
+		mat(0, 2) = dir.m_x * dir.m_z * (1 - cos) + dir.m_y * sin;
+		mat(0, 3) = 0.f;
 
-		mat[mat.getIndex(1, 0)] = dir.m_y * dir.m_x * (1 - cos) + dir.m_z * sin;
-		mat[mat.getIndex(1, 1)] = cos + dir.m_y * dir.m_y * (1.f - cos);
-		mat[mat.getIndex(1, 2)] = dir.m_y * dir.m_z * (1 - cos) - dir.m_x * sin;
-		mat[mat.getIndex(1, 3)] = 0.f;
+		mat(1, 0) = dir.m_y * dir.m_x * (1 - cos) + dir.m_z * sin;
+		mat(1, 1) = cos + dir.m_y * dir.m_y * (1.f - cos);
+		mat(1, 2) = dir.m_y * dir.m_z * (1 - cos) - dir.m_x * sin;
+		mat(1, 3) = 0.f;
 
-		mat[mat.getIndex(2, 0)] = dir.m_z * dir.m_x * (1 - cos) - dir.m_y * sin;
-		mat[mat.getIndex(2, 1)] = dir.m_z * dir.m_y * (1 - cos) + dir.m_x * sin;
-		mat[mat.getIndex(2, 2)] = cos + dir.m_z * dir.m_z * (1.f - cos);
-		mat[mat.getIndex(2, 3)] = 0.f;
+		mat(2, 0) = dir.m_z * dir.m_x * (1 - cos) - dir.m_y * sin;
+		mat(2, 1) = dir.m_z * dir.m_y * (1 - cos) + dir.m_x * sin;
+		mat(2, 2) = cos + dir.m_z * dir.m_z * (1.f - cos);
+		mat(2, 3) = 0.f;
 
-		mat[mat.getIndex(3, 0)] = 0.f;
-		mat[mat.getIndex(3, 1)] = 0.f;
-		mat[mat.getIndex(3, 2)] = 0.f;
-		mat[mat.getIndex(3, 3)] = 1.f;
+		mat(3, 0) = 0.f;
+		mat(3, 1) = 0.f;
+		mat(3, 2) = 0.f;
+		mat(3, 3) = 1.f;
 
 		return mat;
 	}
@@ -269,25 +269,25 @@ namespace LibMath
 
 		Matrix4x4 rotationMat;
 
-		rotationMat[rotationMat.getIndex(0, 0)] = cosYaw * cosRoll + sinYaw * sinPitch * sinRoll;
-		rotationMat[rotationMat.getIndex(0, 1)] = -cosYaw * sinRoll + sinYaw * sinPitch * cosRoll;
-		rotationMat[rotationMat.getIndex(0, 2)] = sinYaw * cosPitch;
-		rotationMat[rotationMat.getIndex(0, 3)] = 0.f;
+		rotationMat(0, 0) = cosYaw * cosRoll + sinYaw * sinPitch * sinRoll;
+		rotationMat(0, 1) = -cosYaw * sinRoll + sinYaw * sinPitch * cosRoll;
+		rotationMat(0, 2) = sinYaw * cosPitch;
+		rotationMat(0, 3) = 0.f;
 
-		rotationMat[rotationMat.getIndex(1, 0)] = sinRoll * cosPitch;
-		rotationMat[rotationMat.getIndex(1, 1)] = cosRoll * cosPitch;
-		rotationMat[rotationMat.getIndex(1, 2)] = -sinPitch;
-		rotationMat[rotationMat.getIndex(1, 3)] = 0.f;
+		rotationMat(1, 0) = sinRoll * cosPitch;
+		rotationMat(1, 1) = cosRoll * cosPitch;
+		rotationMat(1, 2) = -sinPitch;
+		rotationMat(1, 3) = 0.f;
 
-		rotationMat[rotationMat.getIndex(2, 0)] = -sinYaw * cosRoll + cosYaw * sinPitch * sinRoll;
-		rotationMat[rotationMat.getIndex(2, 1)] = sinRoll * sinYaw + cosYaw * sinPitch * cosRoll;
-		rotationMat[rotationMat.getIndex(2, 2)] = cosYaw * cosPitch;
-		rotationMat[rotationMat.getIndex(2, 3)] = 0.f;
+		rotationMat(2, 0) = -sinYaw * cosRoll + cosYaw * sinPitch * sinRoll;
+		rotationMat(2, 1) = sinRoll * sinYaw + cosYaw * sinPitch * cosRoll;
+		rotationMat(2, 2) = cosYaw * cosPitch;
+		rotationMat(2, 3) = 0.f;
 
-		rotationMat[rotationMat.getIndex(3, 0)] = 0.f;
-		rotationMat[rotationMat.getIndex(3, 1)] = 0.f;
-		rotationMat[rotationMat.getIndex(3, 2)] = 0.f;
-		rotationMat[rotationMat.getIndex(3, 3)] = 1.f;
+		rotationMat(3, 0) = 0.f;
+		rotationMat(3, 1) = 0.f;
+		rotationMat(3, 2) = 0.f;
+		rotationMat(3, 3) = 1.f;
 
 		return rotationMat;
 	}
@@ -332,25 +332,25 @@ namespace LibMath
 
 		Matrix4x4 rotationMat;
 
-		rotationMat[rotationMat.getIndex(0, 0)] = (axis.m_x * axis.m_x * k) + cosA;
-		rotationMat[rotationMat.getIndex(0, 1)] = (axis.m_y * axis.m_x * k) - axis.m_z;
-		rotationMat[rotationMat.getIndex(0, 2)] = (axis.m_z * axis.m_x * k) + axis.m_y;
-		rotationMat[rotationMat.getIndex(0, 3)] = 0.f;
+		rotationMat(0, 0) = (axis.m_x * axis.m_x * k) + cosA;
+		rotationMat(0, 1) = (axis.m_y * axis.m_x * k) - axis.m_z;
+		rotationMat(0, 2) = (axis.m_z * axis.m_x * k) + axis.m_y;
+		rotationMat(0, 3) = 0.f;
 
-		rotationMat[rotationMat.getIndex(1, 0)] = (axis.m_x * axis.m_y * k) + axis.m_z;
-		rotationMat[rotationMat.getIndex(1, 1)] = (axis.m_y * axis.m_y * k) + cosA;
-		rotationMat[rotationMat.getIndex(1, 2)] = (axis.m_z * axis.m_y * k) - axis.m_x;
-		rotationMat[rotationMat.getIndex(1, 3)] = 0.f;
+		rotationMat(1, 0) = (axis.m_x * axis.m_y * k) + axis.m_z;
+		rotationMat(1, 1) = (axis.m_y * axis.m_y * k) + cosA;
+		rotationMat(1, 2) = (axis.m_z * axis.m_y * k) - axis.m_x;
+		rotationMat(1, 3) = 0.f;
 
-		rotationMat[rotationMat.getIndex(2, 0)] = (axis.m_x * axis.m_z * k) - axis.m_y;
-		rotationMat[rotationMat.getIndex(2, 1)] = (axis.m_y * axis.m_z * k) + axis.m_x;
-		rotationMat[rotationMat.getIndex(2, 2)] = (axis.m_z * axis.m_z * k) + cosA;
-		rotationMat[rotationMat.getIndex(2, 3)] = 0.f;
+		rotationMat(2, 0) = (axis.m_x * axis.m_z * k) - axis.m_y;
+		rotationMat(2, 1) = (axis.m_y * axis.m_z * k) + axis.m_x;
+		rotationMat(2, 2) = (axis.m_z * axis.m_z * k) + cosA;
+		rotationMat(2, 3) = 0.f;
 
-		rotationMat[rotationMat.getIndex(3, 0)] = 0.f;
-		rotationMat[rotationMat.getIndex(3, 1)] = 0.f;
-		rotationMat[rotationMat.getIndex(3, 2)] = 0.f;
-		rotationMat[rotationMat.getIndex(3, 3)] = 1.f;
+		rotationMat(3, 0) = 0.f;
+		rotationMat(3, 1) = 0.f;
+		rotationMat(3, 2) = 0.f;
+		rotationMat(3, 3) = 1.f;
 
 		return rotationMat;
 	}
@@ -360,16 +360,16 @@ namespace LibMath
 	{
 		Matrix4x4 mat;
 
-		mat[mat.getIndex(0, 0)] = 2.f / (right - left);
-		mat[mat.getIndex(0, 3)] = (right + left) / (left - right);
+		mat(0, 0) = 2.f / (right - left);
+		mat(0, 3) = (right + left) / (left - right);
 
-		mat[mat.getIndex(1, 1)] = 2.f / (top - bottom);
-		mat[mat.getIndex(1, 3)] = (top + bottom) / (bottom - top);
+		mat(1, 1) = 2.f / (top - bottom);
+		mat(1, 3) = (top + bottom) / (bottom - top);
 
-		mat[mat.getIndex(2, 2)] = 2.f / (near - far);
-		mat[mat.getIndex(2, 3)] = (far + near) / (near - far);
+		mat(2, 2) = 2.f / (near - far);
+		mat(2, 3) = (far + near) / (near - far);
 
-		mat[mat.getIndex(3, 3)] = 1.f;
+		mat(3, 3) = 1.f;
 
 		return mat;
 	}
@@ -381,11 +381,11 @@ namespace LibMath
 
 		Matrix4x4 mat;
 
-		mat[mat.getIndex(0, 0)] = 1.f / (aspect * tanHalfFovY);
-		mat[mat.getIndex(1, 1)] = 1.f / tanHalfFovY;
-		mat[mat.getIndex(2, 2)] = (far + near) / (near - far);
-		mat[mat.getIndex(2, 3)] = (2.f * far * near) / (near - far);
-		mat[mat.getIndex(3, 2)] = -1.f;
+		mat(0, 0) = 1.f / (aspect * tanHalfFovY);
+		mat(1, 1) = 1.f / tanHalfFovY;
+		mat(2, 2) = (far + near) / (near - far);
+		mat(2, 3) = (2.f * far * near) / (near - far);
+		mat(3, 2) = -1.f;
 
 		return mat;
 	}
@@ -398,22 +398,22 @@ namespace LibMath
 
 		Matrix4x4 mat;
 
-		mat[mat.getIndex(0, 0)] = s.m_x;
-		mat[mat.getIndex(0, 1)] = s.m_y;
-		mat[mat.getIndex(0, 2)] = s.m_z;
-		mat[mat.getIndex(0, 3)] = -s.dot(eye);
+		mat(0, 0) = s.m_x;
+		mat(0, 1) = s.m_y;
+		mat(0, 2) = s.m_z;
+		mat(0, 3) = -s.dot(eye);
 
-		mat[mat.getIndex(1, 0)] = u.m_x;
-		mat[mat.getIndex(1, 1)] = u.m_y;
-		mat[mat.getIndex(1, 2)] = u.m_z;
-		mat[mat.getIndex(1, 3)] = -u.dot(eye);
+		mat(1, 0) = u.m_x;
+		mat(1, 1) = u.m_y;
+		mat(1, 2) = u.m_z;
+		mat(1, 3) = -u.dot(eye);
 
-		mat[mat.getIndex(2, 0)] = -f.m_x;
-		mat[mat.getIndex(2, 1)] = -f.m_y;
-		mat[mat.getIndex(2, 2)] = -f.m_z;
-		mat[mat.getIndex(2, 3)] = f.dot(eye);
+		mat(2, 0) = -f.m_x;
+		mat(2, 1) = -f.m_y;
+		mat(2, 2) = -f.m_z;
+		mat(2, 3) = f.dot(eye);
 
-		mat[mat.getIndex(3, 3)] = 1.f;
+		mat(3, 3) = 1.f;
 
 		return mat;
 	}
@@ -450,7 +450,7 @@ namespace LibMath
 		// Builds a diagonal matrix with the given scalar
 		for (length_t row = 0; row < m_rows; row++)
 			for (length_t col = 0; col < m_columns; col++)
-				m_values[getIndex(row, col)] = row == col ? scalar : 0;
+				(*this)(row, col) = row == col ? scalar : 0;
 	}
 
 	Matrix::length_t Matrix::getIndex(const length_t row, const length_t column) const
@@ -556,6 +556,16 @@ namespace LibMath
 		return m_values[index];
 	}
 
+	float Matrix::operator()(const length_t row, const length_t column) const
+	{
+		return (*this)[getIndex(row, column)];
+	}
+
+	float& Matrix::operator()(const length_t row, const length_t column)
+	{
+		return (*this)[getIndex(row, column)];
+	}
+
 	Matrix& Matrix::operator+=(const Matrix& other)
 	{
 		if (other.m_columns != m_columns || other.m_rows != m_rows)
@@ -658,15 +668,9 @@ namespace LibMath
 				float scalar = 0;
 
 				for (length_t col = 0; col < m_columns; col++)
-				{
-					const length_t curIndex = getIndex(row, col);
-					const length_t otherIndex = other.getIndex(col, otherCol);
+					scalar += (*this)(row, col) * other(col, otherCol);
 
-					scalar += m_values[curIndex] * other[otherIndex];
-				}
-
-				const length_t resultIndex = result.getIndex(row, otherCol);
-				result[resultIndex] = scalar;
+				result(row, otherCol) = scalar;
 			}
 		}
 
@@ -775,7 +779,7 @@ namespace LibMath
 				if (j == column)
 					continue;
 
-				minor[minor.getIndex(minorLine, minorCol++)] = m_values[getIndex(i, j)];
+				minor(minorLine, minorCol++) = (*this)(i, j);
 			}
 
 			minorLine++;
@@ -838,7 +842,7 @@ namespace LibMath
 
 		for (length_t i = 0; i < m_rows; i++)
 			for (length_t j = 0; j < m_columns; j++)
-				transposed[transposed.getIndex(j, i)] = m_values[getIndex(i, j)];
+				transposed(j, i) = (*this)(i, j);
 
 		return transposed;
 	}
@@ -852,7 +856,7 @@ namespace LibMath
 
 		for (length_t row = 0; row < m_rows; row++)
 			for (length_t col = 0; col < m_columns; col++)
-				coMatrix[getIndex(row, col)] = cofactor(row, col);
+				coMatrix(row, col) = cofactor(row, col);
 
 		return coMatrix;
 	}

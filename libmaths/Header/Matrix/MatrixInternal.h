@@ -51,6 +51,9 @@ namespace LibMath
 		float			operator[](size_t index) const;
 		float&			operator[](size_t index);
 
+		float			operator()(length_t row, length_t column) const;
+		float&			operator()(length_t row, length_t column);
+
 		Matrix&			operator+=(Matrix const& other);
 		Matrix&			operator-=(Matrix const& other);
 		Matrix&			operator*=(Matrix const& other);
