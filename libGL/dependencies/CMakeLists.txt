@@ -14,7 +14,7 @@ set(GLFW_BUILD_DOCS OFF)
 
 FetchContent_MakeAvailable(GLFW)
 
-add_subdirectory(glad)
+add_subdirectory(GLAD)
 
 # Set shared variables
 set(STB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/STB PARENT_SCOPE)
